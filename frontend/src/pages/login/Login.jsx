@@ -178,6 +178,29 @@ function Login() {
           <GoogleIcon />
           Continuar con Google
         </button>
+
+        {/* ---------- CREDENCIALES DEMO ---------- */}
+        <div className="login-demo">
+          <div className="login-demo-title">Credenciales de demostración</div>
+          <div className="login-demo-grid">
+            {demoCredentials.map((cred) => (
+              <button
+                key={cred.role}
+                type="button"
+                className="login-demo-btn"
+                onClick={() => fillDemoCredentials(cred)}
+              >
+                <div className="login-demo-icon" style={{ color: cred.color }}>
+                  {cred.icon}
+                </div>
+                <div className="login-demo-info">
+                  <span className="login-demo-role">{cred.role}</span>
+                  <span className="login-demo-desc">{cred.description}</span>
+                </div>
+              </button>
+            ))}
+          </div>
+        </div>
       </form>
 
     
