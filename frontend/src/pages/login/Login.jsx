@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
+import { useAuth } from '../../services/auth'
 import AuthLayout from '../../components/layout/AuthLayout'
 import Input from '../../components/forms/Input'
 import GoogleIcon from '../../components/common/GoogleIcon'
@@ -7,17 +8,15 @@ import './Login.css'
 
 function Login() {
   const navigate = useNavigate()
+  const { login } = useAuth()
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [rememberMe, setRememberMe] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState('')
 
-  // Credenciales de prueba para demostración
   const demoCredentials = {
     admin: { email: 'admin@cavaltec.com', password: 'Admin123!' },
-    company: { email: 'empresa@cavaltec.com', password: 'Empresa123!' },
-    auditor: { email: 'auditor@cavaltec.com', password: 'Auditor123!' }
   }
 
   const handleSubmit = async (e) => {
@@ -25,27 +24,22 @@ function Login() {
     setError('')
     setIsLoading(true)
 
-    // Simulación de autenticación
-    await new Promise(resolve => setTimeout(resolve, 1200))
-
-    // Validación de credenciales (demo)
-    const matchedRole = Object.entries(demoCredentials).find(
-      ([_, creds]) => creds.email === email && creds.password === password
-    )
-
-    if (matchedRole) {
-      const [role] = matchedRole
-      const routes = {
-        admin: '/admin/dashboard',
-        company: '/company/dashboard',
-        auditor: '/auditor/dashboard'
+    try {
+      const userData = await login(email, password)
+      const roleRoutes = {
+        'Administrador': '/admin/dashboard',
+        'Administrador Empresa': '/company/dashboard',
+        'Auditor': '/auditor/dashboard',
+        'Consultor': '/company/dashboard',
       }
-      navigate(routes[role])
-    } else {
-      setError('Correo o contraseña incorrectos. Verifica tus credenciales.')
+      const route = roleRoutes[userData.role?.name] || '/company/dashboard'
+      navigate(route)
+    } catch (err) {
+      const msg = err.response?.data?.detail || 'Correo o contraseña incorrectos.'
+      setError(msg)
+    } finally {
+      setIsLoading(false)
     }
-
-    setIsLoading(false)
   }
 
   const fillDemoCredentials = (role) => {

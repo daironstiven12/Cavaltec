@@ -73,6 +73,3 @@ class User(Base):
     ai_conversations: Mapped[list["AIConversation"]] = relationship(
         back_populates="user"
     )
-    ai_recommendations: Mapped[list["AIRecommendation"]] = relationship(
-        back_populates="user"
-    )

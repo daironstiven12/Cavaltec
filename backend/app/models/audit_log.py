@@ -18,7 +18,7 @@ class AuditLog(Base):
         Integer, ForeignKey("users.id"), nullable=True
     )
     action: Mapped[AuditAction] = mapped_column(String(20), nullable=False)
-    entity_type: Mapped[str] = mapped_column(String(100), nullable=False)
+    entity: Mapped[str] = mapped_column(String(100), nullable=False)
     entity_id: Mapped[Optional[int]] = mapped_column(Integer, nullable=True)
     old_values: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
     new_values: Mapped[Optional[str]] = mapped_column(Text, nullable=True)

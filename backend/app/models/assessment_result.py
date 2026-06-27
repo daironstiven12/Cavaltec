@@ -34,3 +34,6 @@ class AssessmentResult(Base):
     )
 
     assessment: Mapped["Assessment"] = relationship(back_populates="result")
+    recommendations: Mapped[list["AIRecommendation"]] = relationship(
+        back_populates="assessment_result"
+    )

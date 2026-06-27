@@ -1,7 +1,9 @@
-import { FiSend, FiCpu, FiClock, FiMessageSquare, FiStar, FiZap, FiInfo, FiCheckCircle, FiTarget, FiArrowRight } from 'react-icons/fi'
+import { useState, useEffect, useRef } from 'react'
+import { FiSend, FiCpu, FiClock, FiMessageSquare, FiStar, FiZap, FiTrash2, FiLoader } from 'react-icons/fi'
 import PageHeader from '../../components/common/PageHeader'
 import SectionCard from '../../components/common/SectionCard'
 import Badge from '../../components/common/Badge'
+import { aiAPI } from '../../services/api'
 import './PanelIA.css'
 
 const quickPrompts = [
@@ -12,31 +14,111 @@ const quickPrompts = [
   'Explicar derechos ARCO',
 ]
 
-const chatHistory = [
-  { type: 'user', text: '¿Qué dice la Ley 1581 sobre el consentimiento del titular?' },
-  {
-    type: 'ai',
-    text: 'La Ley 1581 de 2012 establece que el consentimiento del titular debe ser expreso, informado y previo al tratamiento de datos personales. El responsable debe obtener una autorización clara e inequívoca, informando al titular sobre:',
-    items: [
-      'El tratamiento al que serán sometidos sus datos',
-      'La finalidad del tratamiento',
-      'Los derechos que le asisten como titular (ARCO)',
-      'La identidad y datos de contacto del responsable',
-    ],
-  },
-  { type: 'user', text: '¿Qué recomendaciones tienes para mejorar nuestro nivel de cumplimiento?' },
-  {
-    type: 'ai',
-    text: 'Basado en los resultados de tu última evaluación (76% de cumplimiento), estas son mis recomendaciones prioritarias:',
-    recommendations: [
-      { text: 'Implementar un comité de privacidad formal', priority: 'Alta', category: 'Gobernanza' },
-      { text: 'Actualizar la política de tratamiento de datos', priority: 'Alta', category: 'Política de Datos' },
-      { text: 'Establecer controles de privacidad en el diseño de productos', priority: 'Media', category: 'Privacidad' },
-    ],
-  },
+const suggestions = [
+  '¿Cómo implementar PbD en mi organización?',
+  'Explicar el procedimiento para notificar brechas',
+  '¿Qué sanciones establece la Ley 1581?',
 ]
 
 function PanelIA() {
+  const [conversations, setConversations] = useState([])
+  const [messages, setMessages] = useState([])
+  const [inputValue, setInputValue] = useState('')
+  const [loading, setLoading] = useState(false)
+  const [activeConversation, setActiveConversation] = useState(null)
+  const messagesEndRef = useRef(null)
+
+  useEffect(() => {
+    loadConversations()
+  }, [])
+
+  useEffect(() => {
+    scrollToBottom()
+  }, [messages])
+
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
+  }
+
+  const loadConversations = async () => {
+    try {
+      const response = await aiAPI.getConversations()
+      setConversations(response.data)
+    } catch (error) {
+      console.error('Error loading conversations:', error)
+    }
+  }
+
+  const handleSend = async (message = inputValue) => {
+    if (!message.trim() || loading) return
+
+    const userMessage = { role: 'user', content: message.trim() }
+    setMessages(prev => [...prev, userMessage])
+    setInputValue('')
+    setLoading(true)
+
+    try {
+      const response = await aiAPI.chat({
+        message: message.trim(),
+        conversation_id: activeConversation,
+      })
+
+      const aiMessage = {
+        role: 'assistant',
+        content: response.data.response,
+        model: response.data.model,
+        tokens_used: response.data.tokens_used,
+      }
+      setMessages(prev => [...prev, aiMessage])
+      setActiveConversation(response.data.conversation_id)
+      loadConversations()
+    } catch (error) {
+      console.error('Error sending message:', error)
+      const errorMessage = {
+        role: 'assistant',
+        content: 'Lo siento, hubo un error al procesar tu consulta. Por favor, intenta de nuevo.',
+        isError: true,
+      }
+      setMessages(prev => [...prev, errorMessage])
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  const handleKeyPress = (e) => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault()
+      handleSend()
+    }
+  }
+
+  const handleQuickPrompt = (prompt) => {
+    handleSend(prompt)
+  }
+
+  const handleSuggestion = (suggestion) => {
+    handleSend(suggestion)
+  }
+
+  const handleNewChat = () => {
+    setMessages([])
+    setActiveConversation(null)
+  }
+
+  const handleDeleteConversation = async (id, e) => {
+    e.stopPropagation()
+    try {
+      await aiAPI.deleteConversation(id)
+      if (activeConversation === id) {
+        setMessages([])
+        setActiveConversation(null)
+      }
+      loadConversations()
+    } catch (error) {
+      console.error('Error deleting conversation:', error)
+    }
+  }
+
   return (
     <>
       <PageHeader
@@ -52,7 +134,7 @@ function PanelIA() {
                 <FiZap size={20} />
               </div>
               <div className="panel-ia-model-body">
-                <span className="panel-ia-model-name">CAVALTEC AI v2.4</span>
+                <span className="panel-ia-model-name">CAVALTEC AI</span>
                 <span className="panel-ia-model-status">
                   <span className="panel-ia-model-dot" />
                   En línea
@@ -61,45 +143,60 @@ function PanelIA() {
             </div>
           </SectionCard>
 
-          <SectionCard title="Conversaciones fijadas">
-            <div className="panel-ia-pinned">
-              {[
-                { title: 'Análisis de brechas Q2', date: '15/06/2026' },
-                { title: 'Plan de acción priorizado', date: '10/06/2026' },
-                { title: 'Consulta Ley 1581 completa', date: '05/06/2026' },
-              ].map((p, i) => (
-                <button key={i} className="panel-ia-pinned-item">
-                  <FiStar size={14} className="panel-ia-pinned-icon" />
-                  <div className="panel-ia-pinned-body">
-                    <span className="panel-ia-pinned-title">{p.title}</span>
-                    <span className="panel-ia-pinned-date">{p.date}</span>
-                  </div>
-                </button>
-              ))}
-            </div>
+          <SectionCard title="Nueva conversación">
+            <button className="panel-ia-new-chat" onClick={handleNewChat}>
+              <FiMessageSquare size={16} />
+              Nueva conversación
+            </button>
           </SectionCard>
 
           <SectionCard title="Historial">
             <div className="panel-ia-history-list">
-              {[
-                'Consulta sobre Ley 1581',
-                'Análisis de brechas',
-                'Recomendaciones generales',
-                'Plan de acción Q3',
-                'Derechos ARCO explicación',
-              ].map((h, i) => (
-                <button key={i} className="panel-ia-history-item">
-                  <FiClock size={14} />
-                  {h}
-                </button>
-              ))}
+              {conversations.length === 0 ? (
+                <span className="panel-ia-empty">Sin conversaciones</span>
+              ) : (
+                conversations.map((conv) => (
+                  <div
+                    key={conv.id}
+                    className={`panel-ia-history-item ${activeConversation === conv.id ? 'panel-ia-history-item--active' : ''}`}
+                  >
+                    <button
+                      className="panel-ia-history-btn"
+                      onClick={() => {
+                        setActiveConversation(conv.id)
+                        setMessages([
+                          { role: 'user', content: conv.prompt },
+                          { role: 'assistant', content: conv.response },
+                        ])
+                      }}
+                    >
+                      <FiClock size={14} />
+                      <span className="panel-ia-history-text">
+                        {conv.prompt.substring(0, 40)}...
+                      </span>
+                    </button>
+                    <button
+                      className="panel-ia-history-delete"
+                      onClick={(e) => handleDeleteConversation(conv.id, e)}
+                      title="Eliminar conversación"
+                    >
+                      <FiTrash2 size={14} />
+                    </button>
+                  </div>
+                ))
+              )}
             </div>
           </SectionCard>
 
           <SectionCard title="Prompts rápidos">
             <div className="panel-ia-prompts">
               {quickPrompts.map((p, i) => (
-                <button key={i} className="panel-ia-prompt">
+                <button
+                  key={i}
+                  className="panel-ia-prompt"
+                  onClick={() => handleQuickPrompt(p)}
+                  disabled={loading}
+                >
                   <FiMessageSquare size={14} />
                   {p}
                 </button>
@@ -111,70 +208,101 @@ function PanelIA() {
         <div className="panel-ia-chat">
           <SectionCard className="panel-ia-messages">
             <div className="chat-messages">
-              {chatHistory.map((msg, i) => (
-                <div key={i}>
-                  {msg.type === 'user' && (
-                    <div className="chat-message chat-message--user">
-                      <div className="chat-bubble chat-bubble--user">
-                        <p>{msg.text}</p>
-                      </div>
-                    </div>
-                  )}
-                  {msg.type === 'ai' && (
-                    <div className="chat-message chat-message--ai">
-                      <div className="chat-avatar-ai">
-                        <FiCpu size={18} />
-                      </div>
-                      <div className="chat-bubble chat-bubble--ai">
-                        <p>{msg.text}</p>
-                        {msg.items && (
-                          <ul className="chat-list">
-                            {msg.items.map((item, j) => (
-                              <li key={j}>{item}</li>
-                            ))}
-                          </ul>
-                        )}
-                        {msg.recommendations && (
-                          <div className="chat-recs">
-                            {msg.recommendations.map((r, j) => (
-                              <div key={j} className="chat-rec-item">
-                                <div className="chat-rec-header">
-                                  <Badge variant={r.priority === 'Alta' ? 'warning' : 'default'}>{r.priority}</Badge>
-                                  <span className="chat-rec-category">{r.category}</span>
-                                </div>
-                                <p className="chat-rec-text">{r.text}</p>
-                              </div>
-                            ))}
+              {messages.length === 0 ? (
+                <div className="chat-empty">
+                  <FiCpu size={48} className="chat-empty-icon" />
+                  <h3>CAVALTEC AI</h3>
+                  <p>Asistente experto en cumplimiento normativo de protección de datos</p>
+                  <p className="chat-empty-hint">
+                    Haz una pregunta sobre Ley 1581, derechos ARCO, privacidad o seguridad
+                  </p>
+                </div>
+              ) : (
+                messages.map((msg, i) => {
+                  if (msg.role === 'user') {
+                    return (
+                      <div key={i}>
+                        <div className="chat-message chat-message--user">
+                          <div className="chat-bubble chat-bubble--user">
+                            <p>{msg.content}</p>
                           </div>
-                        )}
-                        <div className="chat-bubble-footer">
-                          <Badge variant="accent">Analizado por IA</Badge>
                         </div>
                       </div>
+                    )
+                  }
+
+                  if (msg.role === 'assistant') {
+                    return (
+                      <div key={i}>
+                        <div className="chat-message chat-message--ai">
+                          <div className="chat-avatar-ai">
+                            <FiCpu size={18} />
+                          </div>
+                          <div className={`chat-bubble chat-bubble--ai ${msg.isError ? 'chat-bubble--error' : ''}`}>
+                            <p>{msg.content}</p>
+                            {msg.model && (
+                              <div className="chat-bubble-footer">
+                                <Badge variant="accent">Analizado por IA</Badge>
+                              </div>
+                            )}
+                          </div>
+                        </div>
+                      </div>
+                    )
+                  }
+
+                  return null
+                })
+              )}
+              {loading && (
+                <div className="chat-message chat-message--ai">
+                  <div className="chat-avatar-ai">
+                    <FiCpu size={18} />
+                  </div>
+                  <div className="chat-bubble chat-bubble--ai chat-bubble--loading">
+                    <div className="chat-typing">
+                      <span></span>
+                      <span></span>
+                      <span></span>
                     </div>
-                  )}
+                  </div>
                 </div>
-              ))}
+              )}
+              <div ref={messagesEndRef} />
             </div>
           </SectionCard>
 
           <div className="panel-ia-suggestions">
-            <span className="panel-ia-suggestions-title">Preguntas sugeridas:</span>
-            {[
-              '¿Cómo implementar PbD en mi organización?',
-              'Explicar el procedimiento para notificar brechas',
-              '¿Qué sanciones establece la Ley 1581?',
-            ].map((s, i) => (
-              <button key={i} className="panel-ia-suggestion-chip">
+            <span className="panel-ia-suggestions-title">Sugerencias:</span>
+            {suggestions.map((s, i) => (
+              <button
+                key={i}
+                className="panel-ia-suggestion-chip"
+                onClick={() => handleSuggestion(s)}
+                disabled={loading}
+              >
                 {s}
               </button>
             ))}
           </div>
 
           <div className="panel-ia-input">
-            <input type="text" className="panel-ia-input-field" placeholder="Escribe tu consulta sobre cumplimiento normativo..." readOnly />
-            <button className="panel-ia-input-btn" aria-label="Enviar mensaje">
-              <FiSend size={18} />
+            <input
+              type="text"
+              className="panel-ia-input-field"
+              placeholder="Escribe tu consulta sobre cumplimiento normativo..."
+              value={inputValue}
+              onChange={(e) => setInputValue(e.target.value)}
+              onKeyPress={handleKeyPress}
+              disabled={loading}
+            />
+            <button
+              className="panel-ia-input-btn"
+              onClick={() => handleSend()}
+              disabled={loading || !inputValue.trim()}
+              aria-label="Enviar mensaje"
+            >
+              {loading ? <FiLoader size={18} className="spin" /> : <FiSend size={18} />}
             </button>
           </div>
         </div>

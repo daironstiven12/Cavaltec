@@ -1,7 +1,15 @@
 import { FiSearch, FiBell } from 'react-icons/fi'
+import { useAuth } from '../../services/auth'
 import './Topbar.css'
 
 function Topbar({ title }) {
+  const { user } = useAuth()
+  const initials = user
+    ? `${user.first_name?.[0] || ''}${user.last_name?.[0] || ''}`.toUpperCase()
+    : 'U'
+  const fullName = user ? `${user.first_name} ${user.last_name}` : 'Usuario'
+  const roleName = user?.role?.name || 'Sin rol'
+
   return (
     <header className="topbar">
       <h1 className="topbar-title">{title}</h1>
@@ -18,10 +26,10 @@ function Topbar({ title }) {
         </button>
 
         <div className="topbar-user">
-          <div className="topbar-avatar">JP</div>
+          <div className="topbar-avatar">{initials}</div>
           <div className="topbar-user-info">
-            <span className="topbar-user-name">Juan Pérez</span>
-            <span className="topbar-user-role">Administrador</span>
+            <span className="topbar-user-name">{fullName}</span>
+            <span className="topbar-user-role">{roleName}</span>
           </div>
         </div>
       </div>

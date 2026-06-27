@@ -125,6 +125,169 @@
   margin-bottom: 16px;
 }
 
+.cuestionario-help-content {
+  flex: 1;
+  overflow: hidden;
+}
+
+.cuestionario-help-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 12px;
+  font-size: 12px;
+  color: var(--color-accent);
+  background: var(--color-accent-subtle);
+  border: none;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  margin-top: 12px;
+  transition: all 0.15s;
+}
+
+.cuestionario-help-btn:hover:not(:disabled) {
+  background: var(--color-accent);
+  color: white;
+}
+
+.cuestionario-help-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.cuestionario-ai-chat {
+  max-height: 250px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.cuestionario-ai-msg {
+  display: flex;
+  gap: 6px;
+}
+
+.cuestionario-ai-msg--user {
+  justify-content: flex-end;
+}
+
+.cuestionario-ai-avatar {
+  width: 22px;
+  height: 22px;
+  border-radius: var(--radius-full);
+  background: var(--color-accent-subtle);
+  color: var(--color-accent);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.cuestionario-ai-bubble {
+  padding: 8px 12px;
+  font-size: 12px;
+  line-height: 1.5;
+  border-radius: var(--radius-md);
+  max-width: 85%;
+}
+
+.cuestionario-ai-msg--user .cuestionario-ai-bubble {
+  background: var(--color-accent);
+  color: white;
+  border-bottom-right-radius: 4px;
+}
+
+.cuestionario-ai-msg--ai .cuestionario-ai-bubble {
+  background: var(--color-bg-secondary);
+  border: 1px solid var(--color-border);
+  border-bottom-left-radius: 4px;
+}
+
+.cuestionario-ai-bubble--error {
+  border-color: var(--color-danger) !important;
+  background: var(--color-danger-subtle) !important;
+  color: var(--color-danger) !important;
+}
+
+.cuestionario-ai-bubble--loading {
+  padding: 10px 16px;
+}
+
+.cuestionario-help-input {
+  display: flex;
+  gap: 6px;
+  margin-top: 12px;
+}
+
+.cuestionario-help-input input {
+  flex: 1;
+  padding: 8px 10px;
+  font-size: 12px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background: var(--color-bg);
+  color: var(--color-text-primary);
+  outline: none;
+}
+
+.cuestionario-help-input input:focus {
+  border-color: var(--color-accent);
+}
+
+.cuestionario-help-input button {
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-md);
+  background: var(--color-accent);
+  color: white;
+  border: none;
+  cursor: pointer;
+}
+
+.cuestionario-help-input button:hover:not(:disabled) {
+  background: var(--color-accent-hover);
+}
+
+.cuestionario-help-input button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.chat-typing {
+  display: flex;
+  gap: 3px;
+}
+
+.chat-typing span {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--color-text-tertiary);
+  animation: typing 1.4s infinite ease-in-out;
+}
+
+.chat-typing span:nth-child(1) { animation-delay: 0s; }
+.chat-typing span:nth-child(2) { animation-delay: 0.2s; }
+.chat-typing span:nth-child(3) { animation-delay: 0.4s; }
+
+@keyframes typing {
+  0%, 60%, 100% { transform: translateY(0); opacity: 0.4; }
+  30% { transform: translateY(-4px); opacity: 1; }
+}
+
+.spin {
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
 .cuestionario-help-footer {
   display: flex;
 }

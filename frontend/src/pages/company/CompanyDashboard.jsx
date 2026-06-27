@@ -1,8 +1,10 @@
-import { FiFileText, FiTrendingUp, FiAlertTriangle, FiCheckCircle, FiClock, FiBarChart2 } from 'react-icons/fi'
+import { useState, useRef, useEffect } from 'react'
+import { FiFileText, FiTrendingUp, FiAlertTriangle, FiCheckCircle, FiClock, FiCpu, FiSend, FiLoader } from 'react-icons/fi'
 import StatCard from '../../components/common/StatCard'
 import GaugeCard from '../../components/common/GaugeCard'
 import SectionCard from '../../components/common/SectionCard'
 import Badge from '../../components/common/Badge'
+import { aiAPI } from '../../services/api'
 import './CompanyDashboard.css'
 
 const stats = [
@@ -33,6 +35,56 @@ const evolution = [
 ]
 
 function CompanyDashboard() {
+  const [aiMessages, setAiMessages] = useState([])
+  const [aiInput, setAiInput] = useState('')
+  const [aiLoading, setAiLoading] = useState(false)
+  const [conversationId, setConversationId] = useState(null)
+  const messagesEndRef = useRef(null)
+
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
+  }, [aiMessages])
+
+  const handleAiSend = async (message = aiInput) => {
+    if (!message.trim() || aiLoading) return
+
+    const userMessage = { role: 'user', content: message.trim() }
+    setAiMessages(prev => [...prev, userMessage])
+    setAiInput('')
+    setAiLoading(true)
+
+    try {
+      const response = await aiAPI.chat({
+        message: message.trim(),
+        conversation_id: conversationId,
+      })
+
+      const aiMessage = {
+        role: 'assistant',
+        content: response.data.response,
+        model: response.data.model,
+      }
+      setAiMessages(prev => [...prev, aiMessage])
+      setConversationId(response.data.conversation_id)
+    } catch (error) {
+      console.error('Error:', error)
+      setAiMessages(prev => [...prev, {
+        role: 'assistant',
+        content: 'Error al conectar con el asistente. Intenta de nuevo.',
+        isError: true,
+      }])
+    } finally {
+      setAiLoading(false)
+    }
+  }
+
+  const handleAiKeyPress = (e) => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault()
+      handleAiSend()
+    }
+  }
+
   return (
     <>
       <div className="company-dashboard-stats">
@@ -109,17 +161,54 @@ function CompanyDashboard() {
       </div>
 
       <SectionCard title="Asistente IA">
-        <div className="company-ai">
-          <div className="company-ai-icon">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M12 2a4 4 0 0 1 4 4c0 2-2 3-4 5-2-2-4-3-4-5a4 4 0 0 1 4-4z"/>
-              <path d="M12 22s4-4 4-7a4 4 0 0 0-8 0c0 3 4 7 4 7z"/>
-            </svg>
+        <div className="company-ai-chat">
+          <div className="company-ai-messages">
+            {aiMessages.length === 0 ? (
+              <div className="company-ai-empty">
+                <FiCpu size={32} />
+                <p>Pregunta sobre cumplimiento normativo, Ley 1581 o derechos ARCO</p>
+              </div>
+            ) : (
+              aiMessages.map((msg, i) => (
+                <div key={i} className={`company-ai-msg company-ai-msg--${msg.role}`}>
+                  {msg.role === 'assistant' && (
+                    <div className="company-ai-avatar">
+                      <FiCpu size={14} />
+                    </div>
+                  )}
+                  <div className={`company-ai-bubble ${msg.isError ? 'company-ai-bubble--error' : ''}`}>
+                    {msg.content}
+                  </div>
+                </div>
+              ))
+            )}
+            {aiLoading && (
+              <div className="company-ai-msg company-ai-msg--assistant">
+                <div className="company-ai-avatar">
+                  <FiCpu size={14} />
+                </div>
+                <div className="company-ai-bubble company-ai-bubble--loading">
+                  <div className="chat-typing">
+                    <span></span><span></span><span></span>
+                  </div>
+                </div>
+              </div>
+            )}
+            <div ref={messagesEndRef} />
           </div>
-          <p className="company-ai-text">
-            Tu nivel de cumplimiento general es del 76%. La categoría con mayor oportunidad de mejora es Gobernanza (68%). Te recomendamos revisar las recomendaciones disponibles en el Asistente IA.
-          </p>
-          <Badge variant="accent">Analizado por IA</Badge>
+          <div className="company-ai-input">
+            <input
+              type="text"
+              placeholder="Pregúntale a la IA..."
+              value={aiInput}
+              onChange={(e) => setAiInput(e.target.value)}
+              onKeyPress={handleAiKeyPress}
+              disabled={aiLoading}
+            />
+            <button onClick={() => handleAiSend()} disabled={aiLoading || !aiInput.trim()}>
+              {aiLoading ? <FiLoader size={16} className="spin" /> : <FiSend size={16} />}
+            </button>
+          </div>
         </div>
       </SectionCard>
     </>

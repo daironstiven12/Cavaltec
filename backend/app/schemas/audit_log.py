@@ -9,7 +9,7 @@ from app.core.enums import AuditAction
 class AuditLogBase(BaseModel):
     user_id: Optional[int] = None
     action: AuditAction
-    entity_type: str
+    entity: str
     entity_id: Optional[int] = None
     old_values: Optional[str] = None
     new_values: Optional[str] = None
@@ -23,7 +23,7 @@ class AuditLogCreate(AuditLogBase):
 
 class AuditLogUpdate(AuditLogBase):
     action: Optional[AuditAction] = None
-    entity_type: Optional[str] = None
+    entity: Optional[str] = None
 
 
 class AuditLogResponse(AuditLogBase):
