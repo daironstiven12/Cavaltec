@@ -38,23 +38,25 @@ const columns = [
   { label: 'Último acceso', key: 'lastAccess', width: '140px' },
 ]
 
-const rowActions = [
-  { label: 'Editar', icon: <FiEdit2 size={14} />, onClick: (row) => {} },
-  { label: 'Eliminar', icon: <FiTrash2 size={14} />, onClick: (row) => {} },
-]
-
-const quickFilters = [
-  { label: 'Activos', value: 'Activo' },
-  { label: 'Inactivos', value: 'Inactivo' },
-]
-
 function CompanyUsuarios() {
+  const notify = (msg) => window.dispatchEvent(new CustomEvent('toast', { detail: { type: 'info', message: msg } }))
+
+  const rowActions = [
+    { label: 'Editar', icon: <FiEdit2 size={14} />, onClick: (row) => notify(`Editando usuario ${row.name}...`) },
+    { label: 'Eliminar', icon: <FiTrash2 size={14} />, onClick: (row) => notify(`Eliminando usuario ${row.name}...`) },
+  ]
+
+  const quickFilters = [
+    { label: 'Activos', value: 'Activo' },
+    { label: 'Inactivos', value: 'Inactivo' },
+  ]
+
   return (
     <>
       <PageHeader
         title="Usuarios"
         subtitle="Gestiona los usuarios de tu empresa"
-        actions={<Button variant="primary"><FiPlus size={16} /> Invitar usuario</Button>}
+        actions={<Button variant="primary" onClick={() => notify('Abriendo formulario de invitación...')}><FiPlus size={16} /> Invitar usuario</Button>}
       />
       <DataTable
         columns={columns}

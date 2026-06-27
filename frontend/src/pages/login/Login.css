@@ -3,105 +3,79 @@
    ============================================ */
 
 /* ---------- CREDENCIALES DEMO ---------- */
-.login-demo-card {
-  background: linear-gradient(135deg, var(--color-bg-secondary), var(--color-bg));
-  border: 1px solid var(--color-border-light);
-  border-radius: var(--radius-lg);
-  padding: 20px 20px 16px;
-  margin-bottom: 28px;
-  transition: border-color 0.3s ease;
-}
-
-.login-demo-card:hover {
-  border-color: var(--color-border-hover);
-}
-
-.login-demo-header {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  margin-bottom: 14px;
-}
-
-.login-demo-badge {
-  display: inline-flex;
-  align-items: center;
-  padding: 2px 10px;
-  background: var(--color-accent);
-  color: white;
-  font-size: 11px;
-  font-weight: 600;
-  border-radius: var(--radius-full);
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-  flex-shrink: 0;
+.login-demo {
+  margin-top: 24px;
+  padding-top: 20px;
+  border-top: 1px solid var(--color-border-light);
 }
 
 .login-demo-title {
-  font-size: 14px;
-  font-weight: 500;
-  color: var(--color-text-secondary);
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--color-text-tertiary);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 12px;
+  text-align: center;
 }
 
 .login-demo-grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(2, 1fr);
   gap: 8px;
-  margin-bottom: 12px;
 }
 
 .login-demo-btn {
   display: flex;
-  flex-direction: column;
   align-items: center;
-  justify-content: center;
-  gap: 2px;
-  padding: 10px 8px;
+  gap: 10px;
+  padding: 10px 12px;
   background: var(--color-bg);
   border: 1.5px solid var(--color-border-light);
   border-radius: var(--radius-md);
   cursor: pointer;
   transition: all 0.2s ease;
   font-family: inherit;
-  text-align: center;
-  min-height: 56px;
+  text-align: left;
 }
 
 .login-demo-btn:hover {
   border-color: var(--color-accent);
   background: var(--color-accent-subtle);
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.10);
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(37, 99, 235, 0.08);
 }
 
 .login-demo-btn:active {
   transform: translateY(0);
 }
 
-.login-demo-btn-role {
+.login-demo-icon {
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-sm);
+  background: var(--color-bg-tertiary);
+  flex-shrink: 0;
+}
+
+.login-demo-info {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.login-demo-role {
   font-size: 13px;
   font-weight: 600;
   color: var(--color-text-primary);
 }
 
-.login-demo-btn-creds {
+.login-demo-desc {
   font-size: 11px;
   color: var(--color-text-tertiary);
-  font-family: var(--font-mono);
-  word-break: break-all;
-}
-
-.login-demo-note {
-  font-size: 12px;
-  color: var(--color-text-tertiary);
-  text-align: center;
-  margin: 0;
-  line-height: 1.5;
-}
-
-.login-demo-note-pass {
-  color: var(--color-accent);
-  font-weight: 500;
 }
 
 /* ---------- ERROR ---------- */
@@ -220,41 +194,9 @@
     gap: 6px;
   }
 
-  .login-demo-btn {
-    flex-direction: row;
-    justify-content: space-between;
-    padding: 8px 14px;
-    min-height: 44px;
-  }
-
-  .login-demo-btn-role {
-    font-size: 14px;
-  }
-
-  .login-demo-btn-creds {
-    font-size: 12px;
-  }
-
-  .login-demo-header {
-    flex-wrap: wrap;
-  }
-
   .login-options {
     flex-direction: column;
     align-items: flex-start;
     gap: 8px;
-  }
-}
-
-@media (max-width: 480px) {
-  .login-demo-card {
-    padding: 16px;
-  }
-
-  .login-demo-btn {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 0;
-    padding: 10px 14px;
   }
 }

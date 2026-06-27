@@ -48,24 +48,26 @@ const data = [
   { fecha: '01/04/2026', empresa: 'DataSmart Ltda.', version: 'v2.1.0', cumplimiento: 55, estado: 'Completada' },
 ]
 
-const rowActions = [
-  { label: 'Ver detalle', icon: <FiEye size={14} />, onClick: (row) => {} },
-  { label: 'Descargar', icon: <FiDownload size={14} />, onClick: (row) => {} },
-]
-
-const quickFilters = [
-  { label: 'Completadas', value: 'Completada' },
-  { label: 'En progreso', value: 'En progreso' },
-  { label: 'Borrador', value: 'Borrador' },
-]
-
 function Historial() {
+  const notify = (msg) => window.dispatchEvent(new CustomEvent('toast', { detail: { type: 'info', message: msg } }))
+
+  const rowActions = [
+    { label: 'Ver detalle', icon: <FiEye size={14} />, onClick: (row) => notify(`Abriendo detalle de evaluación ${row.fecha} - ${row.empresa}...`) },
+    { label: 'Descargar', icon: <FiDownload size={14} />, onClick: (row) => notify(`Descargando reporte de ${row.empresa}...`) },
+  ]
+
+  const quickFilters = [
+    { label: 'Completadas', value: 'Completada' },
+    { label: 'En progreso', value: 'En progreso' },
+    { label: 'Borrador', value: 'Borrador' },
+  ]
+
   return (
     <>
       <PageHeader
         title="Historial de evaluaciones"
         subtitle="Consulte todas las evaluaciones realizadas"
-        actions={<Button variant="primary">Nueva evaluación</Button>}
+        actions={<Button variant="primary" onClick={() => notify('Abriendo nueva evaluación...')}>Nueva evaluación</Button>}
       />
       <DataTable
         columns={columns}

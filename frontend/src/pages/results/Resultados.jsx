@@ -1,4 +1,5 @@
-import { FiDownload, FiCheckCircle, FiAlertTriangle, FiThumbsUp, FiTarget, FiArrowRight, FiFileText, FiTrendingUp, FiInfo } from 'react-icons/fi'
+import { useState } from 'react'
+import { FiDownload, FiCheckCircle, FiAlertTriangle, FiThumbsUp, FiTarget, FiArrowRight, FiFileText, FiTrendingUp, FiInfo, FiPrinter } from 'react-icons/fi'
 import { PieChart, Pie, Cell, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, RadialBarChart, RadialBar } from 'recharts'
 import PageHeader from '../../components/common/PageHeader'
 import GaugeCard from '../../components/common/GaugeCard'
@@ -53,6 +54,52 @@ const ResultadosTooltip = ({ active, payload }) => {
 }
 
 function Resultados() {
+  const [showFullPlan, setShowFullPlan] = useState(false)
+
+  const handleExportReport = () => {
+    const reportContent = `
+REPORTE DE CUMPLIMIENTO - CAVALTEC
+==================================
+Empresa: TechCorp S.A.S.
+Evaluación: v2.4.1
+Fecha: 15 de junio, 2026
+
+RESUMEN EJECUTIVO
+Puntaje general: 76%
+Nivel de riesgo: Medio
+Fortalezas: 3
+Brechas detectadas: 3
+Recomendaciones: 4
+
+PUNTUAJE POR CATEGORÍA
+${categoryScores.map(c => `${c.label}: ${c.value}% (${c.trend})`).join('\n')}
+
+BRECHAS DETECTADAS
+${brechas.map((b, i) => `${i + 1}. [${b.severity}] ${b.area}: ${b.desc}`).join('\n')}
+
+FORTALEZAS
+${fortalezas.map((f, i) => `${i + 1}. ${f}`).join('\n')}
+
+PLAN DE ACCIÓN
+${recomendaciones.map((r, i) => `${i + 1}. ${r}`).join('\n')}
+    `.trim()
+
+    const blob = new Blob([reportContent], { type: 'text/plain;charset=utf-8' })
+    const url = URL.createObjectURL(blob)
+    const a = document.createElement('a')
+    a.href = url
+    a.download = `reporte_cumplimiento_techcorp_v2.4.1_${new Date().toISOString().split('T')[0]}.txt`
+    a.click()
+    URL.revokeObjectURL(url)
+  }
+
+  const handlePrint = () => {
+    window.print()
+  }
+
+  const handleViewFullPlan = () => {
+    setShowFullPlan(!showFullPlan)
+  }
   return (
     <>
       <Breadcrumbs />
@@ -60,9 +107,14 @@ function Resultados() {
         title="Resultados de evaluación"
         subtitle="TechCorp S.A.S. · Evaluación v2.4.1 · 15 de junio, 2026"
         actions={
-          <Button variant="secondary">
-            <FiDownload size={16} /> Exportar reporte
-          </Button>
+          <>
+            <Button variant="secondary" onClick={handlePrint}>
+              <FiPrinter size={16} /> Imprimir
+            </Button>
+            <Button variant="secondary" onClick={handleExportReport}>
+              <FiDownload size={16} /> Exportar reporte
+            </Button>
+          </>
         }
       />
 
@@ -221,14 +273,14 @@ function Resultados() {
 
           <SectionCard title="Plan de acción">
             <div className="plan-list">
-              {recomendaciones.slice(0, 2).map((r, i) => (
+              {(showFullPlan ? recomendaciones : recomendaciones.slice(0, 2)).map((r, i) => (
                 <div key={i} className="plan-item">
                   <div className="plan-step">{i + 1}</div>
                   <p className="plan-text">{r}</p>
                 </div>
               ))}
-              <button className="plan-view-all">
-                Ver plan completo <FiArrowRight size={14} />
+              <button className="plan-view-all" onClick={handleViewFullPlan}>
+                {showFullPlan ? 'Ver menos' : 'Ver plan completo'} <FiArrowRight size={14} style={{ transform: showFullPlan ? 'rotate(90deg)' : 'none', transition: 'transform 0.2s' }} />
               </button>
             </div>
           </SectionCard>

@@ -108,6 +108,8 @@ function Cuestionario() {
     }
   }
 
+  const [showToast] = useState(null)
+
   const handleNext = () => {
     if (currentIdx < questions.length - 1) {
       setCurrentIdx(prev => prev + 1)
@@ -126,6 +128,25 @@ function Cuestionario() {
 
   const handleSelectOption = (opt) => {
     setAnswers(prev => ({ ...prev, [currentIdx]: opt }))
+  }
+
+  const handleSaveDraft = () => {
+    try {
+      const draft = { answers, currentIdx, savedAt: new Date().toISOString() }
+      localStorage.setItem('cuestionario_draft', JSON.stringify(draft))
+      window.dispatchEvent(new CustomEvent('toast', { detail: { type: 'success', message: 'Borrador guardado correctamente' } }))
+    } catch {
+      window.dispatchEvent(new CustomEvent('toast', { detail: { type: 'error', message: 'Error al guardar borrador' } }))
+    }
+  }
+
+  const handleFinish = () => {
+    const unanswered = questions.length - Object.keys(answers).length
+    if (unanswered > 0) {
+      window.dispatchEvent(new CustomEvent('toast', { detail: { type: 'warning', message: `Faltan ${unanswered} preguntas por responder` } }))
+      return
+    }
+    window.dispatchEvent(new CustomEvent('toast', { detail: { detail: { type: 'success', message: 'Evaluación completada correctamente' } } }))
   }
 
   useEffect(() => {
@@ -210,12 +231,18 @@ function Cuestionario() {
               <FiArrowLeft size={16} /> Anterior
             </button>
             <div className="cuestionario-actions-right">
-              <button className="btn btn-ghost">
+              <button className="btn btn-ghost" onClick={handleSaveDraft}>
                 <FiSave size={16} /> Guardar borrador
               </button>
-              <button className="btn btn-primary" onClick={handleNext} disabled={currentIdx === questions.length - 1}>
-                Siguiente <FiArrowRight size={16} />
-              </button>
+              {currentIdx === questions.length - 1 ? (
+                <button className="btn btn-primary" onClick={handleFinish}>
+                  <FiCheck size={16} /> Finalizar evaluación
+                </button>
+              ) : (
+                <button className="btn btn-primary" onClick={handleNext}>
+                  Siguiente <FiArrowRight size={16} />
+                </button>
+              )}
             </div>
           </div>
         </div>

@@ -1,0 +1,790 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CAVALTEC - Documentacion Tecnica</title>
+<style>
+:root {
+  --bg: #ffffff;
+  --bg-secondary: #f8fafc;
+  --bg-card: #ffffff;
+  --bg-code: #f1f5f9;
+  --accent: #2563eb;
+  --accent-hover: #1d4ed8;
+  --accent-light: rgba(37,99,235,0.08);
+  --text: #1a1a2e;
+  --text-secondary: #475569;
+  --text-muted: #94a3b8;
+  --border: #e5e7eb;
+  --border-light: #f1f5f9;
+  --success: #059669;
+  --warning: #d97706;
+  --error: #dc2626;
+  --info: #2563eb;
+  --purple: #7c3aed;
+  --teal: #0d9488;
+  --radius: 12px;
+  --radius-sm: 8px;
+  --shadow: 0 1px 3px rgba(0,0,0,0.08);
+  --shadow-md: 0 4px 12px rgba(0,0,0,0.06);
+  --font: 'Segoe UI', system-ui, -apple-system, sans-serif;
+  --mono: 'Cascadia Code', 'Fira Code', 'Consolas', monospace;
+  --sidebar-width: 260px;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;scroll-padding-top:24px;}
+body{font-family:var(--font);background:var(--bg-secondary);color:var(--text);line-height:1.7;font-size:15px;}
+::selection{background:var(--accent);color:#fff;}
+a{color:var(--accent);text-decoration:none;}
+a:hover{text-decoration:underline;}
+
+.layout{display:flex;min-height:100vh;}
+.sidebar{position:fixed;top:0;left:0;width:var(--sidebar-width);height:100vh;background:var(--bg);border-right:1px solid var(--border);overflow-y:auto;padding:24px 0;z-index:100;}
+.sidebar-header{padding:0 20px 20px;border-bottom:1px solid var(--border);margin-bottom:16px;}
+.sidebar-header h2{font-size:16px;font-weight:700;color:var(--accent);margin-bottom:2px;}
+.sidebar-header p{font-size:11px;color:var(--text-muted);}
+.sidebar nav ul{list-style:none;padding:0 12px;}
+.sidebar nav li{margin-bottom:1px;}
+.sidebar nav a{display:flex;align-items:center;gap:8px;padding:7px 12px;color:var(--text-secondary);text-decoration:none;font-size:13px;border-radius:var(--radius-sm);transition:all .15s;border-left:3px solid transparent;}
+.sidebar nav a:hover{background:var(--accent-light);color:var(--accent);border-left-color:var(--accent);text-decoration:none;}
+.sidebar nav a.active{background:var(--accent-light);color:var(--accent);font-weight:600;border-left-color:var(--accent);}
+.sidebar nav .nav-section{font-size:10px;text-transform:uppercase;letter-spacing:1.2px;color:var(--text-muted);padding:14px 12px 4px;font-weight:700;}
+.sidebar nav .nav-icon{width:16px;height:16px;flex-shrink:0;opacity:0.6;}
+.sidebar nav a:hover .nav-icon,.sidebar nav a.active .nav-icon{opacity:1;}
+.main{margin-left:var(--sidebar-width);flex:1;min-width:0;}
+
+.hero{background:var(--bg);border-bottom:1px solid var(--border);padding:64px 48px 48px;}
+.hero-badge{display:inline-flex;align-items:center;gap:6px;background:var(--accent-light);border:1px solid rgba(37,99,235,0.2);color:var(--accent);padding:5px 14px;border-radius:999px;font-size:12px;font-weight:600;margin-bottom:16px;}
+.hero h1{font-size:clamp(28px,4vw,40px);font-weight:800;line-height:1.2;margin-bottom:8px;color:var(--text);}
+.hero .subtitle{font-size:16px;color:var(--text-secondary);margin-bottom:24px;max-width:640px;}
+.hero-stats{display:flex;gap:24px;flex-wrap:wrap;}
+.hero-stat{text-align:center;padding:12px 20px;background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-sm);}
+.hero-stat .num{font-size:24px;font-weight:800;color:var(--accent);}
+.hero-stat .label{font-size:11px;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.5px;}
+
+.content{max-width:900px;margin:0 auto;padding:40px 40px 80px;}
+section{margin-bottom:56px;}
+.section-header{display:flex;align-items:center;gap:10px;margin-bottom:8px;padding-bottom:10px;border-bottom:2px solid var(--border);}
+.section-header h2{font-size:22px;font-weight:700;color:var(--text);}
+.section-icon{width:28px;height:28px;background:var(--accent-light);border-radius:var(--radius-sm);display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.section-icon svg{width:16px;height:16px;color:var(--accent);}
+section>p{color:var(--text-secondary);margin:8px 0 20px;font-size:14px;}
+section h3{font-size:17px;font-weight:600;margin:28px 0 10px;color:var(--text);}
+section h4{font-size:15px;font-weight:600;margin:20px 0 8px;color:var(--text);}
+
+.card-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:12px;margin:12px 0;}
+.card{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-sm);padding:18px;transition:all .2s;box-shadow:var(--shadow);}
+.card:hover{border-color:var(--accent);box-shadow:var(--shadow-md);transform:translateY(-1px);}
+.card h4{font-size:14px;font-weight:600;margin-bottom:6px;color:var(--text);display:flex;align-items:center;gap:6px;}
+.card h4 .dot{width:6px;height:6px;border-radius:50%;flex-shrink:0;}
+.card p{font-size:13px;color:var(--text-secondary);margin:0;line-height:1.5;}
+.card .why{font-size:12px;color:var(--accent);margin-top:6px;padding-top:6px;border-top:1px dashed var(--border);font-style:italic;}
+
+.tag{display:inline-flex;align-items:center;padding:3px 9px;border-radius:999px;font-size:11px;font-weight:600;border:1px solid;}
+.tag-blue{background:rgba(37,99,235,0.08);color:var(--accent);border-color:rgba(37,99,235,0.2);}
+.tag-green{background:rgba(5,150,105,0.08);color:var(--success);border-color:rgba(5,150,105,0.2);}
+.tag-purple{background:rgba(124,58,237,0.08);color:var(--purple);border-color:rgba(124,58,237,0.2);}
+.tag-orange{background:rgba(217,119,6,0.08);color:var(--warning);border-color:rgba(217,119,6,0.2);}
+.tag-teal{background:rgba(13,148,136,0.08);color:var(--teal);border-color:rgba(13,148,136,0.2);}
+.tag-red{background:rgba(220,38,38,0.08);color:var(--error);border-color:rgba(220,38,38,0.2);}
+
+pre{background:var(--bg-code);border:1px solid var(--border);border-radius:var(--radius-sm);padding:16px;margin:12px 0;overflow-x:auto;font-family:var(--mono);font-size:12px;line-height:1.7;color:var(--text);position:relative;}
+pre .lang-label{position:absolute;top:6px;right:10px;font-size:9px;color:var(--text-muted);text-transform:uppercase;letter-spacing:1px;}
+code{font-family:var(--mono);font-size:12px;background:var(--bg-code);padding:2px 6px;border-radius:4px;color:var(--accent);border:1px solid var(--border);}
+pre code{background:none;padding:0;border:none;color:inherit;}
+.kw{color:#7c3aed;}.str{color:#059669;}.cmt{color:#94a3b8;font-style:italic;}.fn{color:#2563eb;}.num{color:#d97706;}
+
+.table-wrap{overflow-x:auto;margin:12px 0;border-radius:var(--radius-sm);border:1px solid var(--border);box-shadow:var(--shadow);}
+table{width:100%;border-collapse:collapse;font-size:13px;}
+th{background:var(--bg-secondary);color:var(--text);font-weight:600;text-align:left;padding:10px 14px;border-bottom:2px solid var(--border);white-space:nowrap;}
+td{padding:9px 14px;border-bottom:1px solid var(--border-light);color:var(--text-secondary);}
+tr:hover td{background:var(--accent-light);}
+.method{display:inline-block;padding:2px 7px;border-radius:4px;font-size:10px;font-weight:700;font-family:var(--mono);text-transform:uppercase;min-width:48px;text-align:center;}
+.method-get{background:rgba(5,150,105,0.1);color:var(--success);}
+.method-post{background:rgba(37,99,235,0.1);color:var(--accent);}
+.method-put{background:rgba(217,119,6,0.1);color:var(--warning);}
+.method-delete{background:rgba(220,38,38,0.1);color:var(--error);}
+.method-patch{background:rgba(124,58,237,0.1);color:var(--purple);}
+
+.diagram{background:var(--bg-code);border:1px solid var(--border);border-radius:var(--radius-sm);padding:24px;margin:16px 0;font-family:var(--mono);font-size:12px;line-height:1.5;overflow-x:auto;white-space:pre;color:var(--text-secondary);}
+.diagram strong{color:var(--accent);}
+
+.callout{background:var(--accent-light);border:1px solid rgba(37,99,235,0.15);border-radius:var(--radius-sm);padding:14px 18px;margin:16px 0;display:flex;gap:10px;align-items:flex-start;}
+.callout.warning{background:rgba(217,119,6,0.06);border-color:rgba(217,119,6,0.2);}
+.callout svg{width:18px;height:18px;flex-shrink:0;margin-top:1px;color:var(--accent);}
+.callout.warning svg{color:var(--warning);}
+.callout p{font-size:13px;color:var(--text-secondary);margin:0;}
+.callout strong{color:var(--text);}
+
+.feature-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:10px;margin:12px 0;}
+.feature-item{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-sm);padding:14px;text-align:center;box-shadow:var(--shadow);}
+.feature-item svg{width:24px;height:24px;color:var(--accent);margin-bottom:6px;}
+.feature-item h5{font-size:13px;font-weight:600;color:var(--text);margin-bottom:2px;}
+.feature-item p{font-size:11px;color:var(--text-muted);}
+
+.footer{background:var(--bg);border-top:1px solid var(--border);padding:32px;text-align:center;margin-left:var(--sidebar-width);}
+.footer p{color:var(--text-muted);font-size:12px;}
+
+.menu-toggle{display:none;position:fixed;top:12px;left:12px;z-index:200;background:var(--accent);color:#fff;border:none;width:40px;height:40px;border-radius:var(--radius-sm);cursor:pointer;box-shadow:var(--shadow-md);}
+.menu-toggle svg{width:20px;height:20px;}
+.overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.3);z-index:99;}
+@media(max-width:860px){
+  .sidebar{transform:translateX(-100%);z-index:150;}
+  .sidebar.open{transform:translateX(0);}
+  .overlay.open{display:block;}
+  .menu-toggle{display:flex;align-items:center;justify-content:center;}
+  .main{margin-left:0;}
+  .hero{padding:48px 20px 32px;}
+  .content{padding:24px 16px 60px;}
+  .footer{margin-left:0;}
+  .card-grid{grid-template-columns:1fr;}
+  .feature-grid{grid-template-columns:repeat(2,1fr);}
+}
+</style>
+</head>
+<body>
+
+<button class="menu-toggle" onclick="document.querySelector('.sidebar').classList.toggle('open');document.querySelector('.overlay').classList.toggle('open')" aria-label="Menu">
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+</button>
+<div class="overlay" onclick="document.querySelector('.sidebar').classList.remove('open');this.classList.remove('open')"></div>
+
+<div class="layout">
+<aside class="sidebar" role="navigation">
+  <div class="sidebar-header">
+    <h2>CAVALTEC</h2>
+    <p>Documentacion Tecnica v1.0</p>
+  </div>
+  <nav>
+    <ul>
+      <li class="nav-section">Inicio</li>
+      <li><a href="#resumen"><svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>Resumen Ejecutivo</a></li>
+      <li><a href="#tecnologias"><svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>Tecnologias</a></li>
+      <li><a href="#arquitectura"><svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>Arquitectura</a></li>
+      <li><a href="#estructura"><svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>Estructura</a></li>
+      <li class="nav-section">Datos</li>
+      <li><a href="#base-de-datos"><svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/></svg>Base de Datos</a></li>
+      <li><a href="#autenticacion"><svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>Autenticacion</a></li>
+      <li><a href="#endpoints"><svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>API Endpoints</a></li>
+      <li class="nav-section">Funcionalidades</li>
+      <li><a href="#ia"><svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2a4 4 0 0 1 4 4c0 2-2 3-4 5-2-2-4-3-4-5a4 4 0 0 1 4-4z"/><path d="M12 22s4-4 4-7a4 4 0 0 0-8 0c0 3 4 7 4 7z"/></svg>Asistente IA</a></li>
+      <li><a href="#uiux"><svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="9" y1="21" x2="9" y2="9"/></svg>UI/UX</a></li>
+      <li class="nav-section">Operaciones</li>
+      <li><a href="#credenciales"><svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>Credenciales</a></li>
+      <li><a href="#instalacion"><svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>Instalacion</a></li>
+      <li><a href="#vercel"><svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>Despliegue</a></li>
+      <li><a href="#decisiones"><svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>Decisiones</a></li>
+    </ul>
+  </nav>
+</aside>
+
+<div class="main">
+  <header class="hero">
+    <div class="hero-badge">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+      Hackathon Medellin 2026
+    </div>
+    <h1>CAVALTEC</h1>
+    <p class="subtitle">Plataforma de Cumplimiento Ley 1581. Documentacion tecnica completa del sistema de evaluacion y monitoreo de cumplimiento normativo de proteccion de datos personales en Colombia.</p>
+    <div class="hero-stats">
+      <div class="hero-stat"><div class="num">44</div><div class="label">Endpoints</div></div>
+      <div class="hero-stat"><div class="num">18</div><div class="label">Tablas DB</div></div>
+      <div class="hero-stat"><div class="num">4</div><div class="label">Roles</div></div>
+      <div class="hero-stat"><div class="num">3</div><div class="label">Servicios</div></div>
+    </div>
+  </header>
+
+  <div class="content" id="contenido">
+
+    <!-- RESUMEN EJECUTIVO -->
+    <section id="resumen">
+      <div class="section-header">
+        <div class="section-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg></div>
+        <h2>Resumen Ejecutivo</h2>
+      </div>
+
+      <h3>Que es CAVALTEC</h3>
+      <p>CAVALTEC es una plataforma web disenada para ayudar a las empresas colombianas a evaluar, monitorear y mejorar su cumplimiento normativo en materia de proteccion de datos personales, cumpliendo con la <strong>Ley 1581 de 2012</strong> y el <strong>Decreto 1377 de 2017</strong>.</p>
+
+      <h3>Para que sirve</h3>
+      <div class="card-grid">
+        <div class="card">
+          <h4><span class="dot" style="background:var(--accent)"></span> Evaluacion</h4>
+          <p>Cuestionarios estructurados con 20 preguntas en 4 categorias para medir el nivel de cumplimiento de una empresa.</p>
+        </div>
+        <div class="card">
+          <h4><span class="dot" style="background:var(--success)"></span> Monitoreo</h4>
+          <p>Dashboards con graficos de tendencia, resultados por categoria y seguimiento historico de evaluaciones.</p>
+        </div>
+        <div class="card">
+          <h4><span class="dot" style="background:var(--purple)"></span> Asistente IA</h4>
+          <p>Chatbot inteligente que responde exclusivamente sobre temas de cumplimiento normativo usando OpenRouter + Gemma 4.</p>
+        </div>
+        <div class="card">
+          <h4><span class="dot" style="background:var(--warning)"></span> Reportes</h4>
+          <p>Generacion y descarga de reportes detallados con recomendaciones de mejora priorizadas por impacto.</p>
+        </div>
+      </div>
+
+      <h3>Problema que resuelve</h3>
+      <p>Las empresas colombianas enfrentan complejidades para interpretar y aplicar la Ley 1581 de 2012. CAVALTEC automatiza el proceso de evaluacion de cumplimiento, ofrece recomendaciones personalizadas impulsadas por IA y centraliza la gestion de datos personales en una plataforma intuitiva, reduciendo el riesgo de sanciones y mejorando la confianza de los titulares de datos.</p>
+
+      <div class="callout">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+        <p><strong>Enfoque:</strong> La plataforma esta disenada con un enfoque practico: cuestionarios validados por expertos, IA especializada en cumplimiento, y una interfaz accesible para usuarios no tecnicos.</p>
+      </div>
+    </section>
+
+    <!-- TECNOLOGIAS -->
+    <section id="tecnologias">
+      <div class="section-header">
+        <div class="section-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></div>
+        <h2>Tecnologias Utilizadas</h2>
+      </div>
+      <p>Stack tecnologico completo seleccionado para rendimiento, seguridad y experiencia de desarrollo.</p>
+
+      <h3>Frontend</h3>
+      <div class="card-grid">
+        <div class="card">
+          <h4><span class="dot" style="background:#61dafb"></span> React 19</h4>
+          <p>Framework de UI con componentes reutilizables y concurrencia.</p>
+          <div class="why">Por que: Ecosistema amplio, virtual DOM para performance, composicion de componentes, y soporte nativo para hooks.</div>
+        </div>
+        <div class="card">
+          <h4><span class="dot" style="background:#646cff"></span> Vite 8</h4>
+          <p>Build tool con HMR instantaneo y soporte ESM nativo.</p>
+          <div class="why">Por que: Build 10-100x mas rapido que Webpack, Hot Module Replacement instantaneo, configuracion mínima.</div>
+        </div>
+        <div class="card">
+          <h4><span class="dot" style="background:#f44250"></span> React Router 7</h4>
+          <p>Enrutamiento SPA con layouts anidados y lazy loading.</p>
+          <div class="why">Por que: Rutas anidadas para layouts por rol, navegacion client-side optimizada, loaders para datos.</div>
+        </div>
+        <div class="card">
+          <h4><span class="dot" style="background:#ff6384"></span> Recharts</h4>
+          <p>Graficos basados en D3.js con API declarativa.</p>
+          <div class="why">Por que: API declarativa React-native, basado en D3.js, componentes tipados, responsive por defecto.</div>
+        </div>
+        <div class="card">
+          <h4><span class="dot" style="background:#5a29e4"></span> Axios</h4>
+          <p>Cliente HTTP con interceptores y cancelacion de requests.</p>
+          <div class="why">Por que: Interceptors para JWT automatico, cancelacion de requests duplicados, soporte para refresh tokens.</div>
+        </div>
+      </div>
+
+      <h3>Backend</h3>
+      <div class="card-grid">
+        <div class="card">
+          <h4><span class="dot" style="background:#009688"></span> FastAPI</h4>
+          <p>Framework web async con documentacion automatica Swagger.</p>
+          <div class="why">Por que: Performance async comparable a Node.js, documentacion automatica, validacion con Pydantic, dependency injection nativo.</div>
+        </div>
+        <div class="card">
+          <h4><span class="dot" style="background:#d71f00"></span> SQLAlchemy 2.0</h4>
+          <p>ORM con soporte async y typing completo.</p>
+          <div class="why">Por que: ORM maduro y probado, soporte async nativo, migrations con Alembic, relationship loading optimizado.</div>
+        </div>
+        <div class="card">
+          <h4><span class="dot" style="background:#096e1e"></span> Pydantic v2</h4>
+          <p>Validacion de schemas con serializacion automatica.</p>
+          <div class="why">Por que: Validacion automatica de datos, serializacion JSON, type hints completos, rendimiento optimizado en C.</div>
+        </div>
+        <div class="card">
+          <h4><span class="dot" style="background:#f7931e"></span> Passlib + Argon2</h4>
+          <p>Hashing de contraseñas con algoritmo memory-hard.</p>
+          <div class="why">Por que: Algoritmo ganador del Password Hashing Competition, resistente a ataques GPU/ASIC, configurable en memoria y tiempo.</div>
+        </div>
+        <div class="card">
+          <h4><span class="dot" style="background:#0ea5e9"></span> PyJWT</h4>
+          <p>Implementacion JWT con refresh tokens.</p>
+          <div class="why">Por que: Stateless y escalable, standard de la industria, funciona con cookies o headers, soporte para HS256/RS256.</div>
+        </div>
+      </div>
+
+      <h3>Base de Datos</h3>
+      <div class="card-grid">
+        <div class="card">
+          <h4><span class="dot" style="background:#00758f"></span> MySQL 8.0</h4>
+          <p>Base de datos relacional con soporte ACID completo.</p>
+          <div class="why">Por que: Madurez y estabilidad probada, integracion nativa con SQLAlchemy, herramientas de administracion como phpMyAdmin.</div>
+        </div>
+        <div class="card">
+          <h4><span class="dot" style="background:#2496ed"></span> Docker Compose</h4>
+          <p>Orquestacion de servicios con healthchecks y redes aisladas.</p>
+          <div class="why">Por que: Replicar el entorno exacto en cualquier maquina, un solo comando levanta 3 servicios, volumenes persistentes para datos.</div>
+        </div>
+      </div>
+
+      <h3>Inteligencia Artificial</h3>
+      <div class="card-grid">
+        <div class="card">
+          <h4><span class="dot" style="background:var(--teal)"></span> OpenRouter API</h4>
+          <p>Gateway de acceso a multiples modelos de IA.</p>
+          <div class="why">Por que: Acceso gratuito a multiples modelos sin infraestructura propia, cambio dinamico de modelos, sin necesidad de GPU.</div>
+        </div>
+        <div class="card">
+          <h4><span class="dot" style="background:var(--purple)"></span> Google Gemma 4 26B</h4>
+          <p>Modelo de lenguaje gratuito con 26B parametros.</p>
+          <div class="why">Por que: Mejor modelo gratuito disponible, optimizado para chat y analisis, good balance entre calidad y costo.</div>
+        </div>
+      </div>
+
+      <h3>DevOps y Herramientas</h3>
+      <div class="feature-grid">
+        <div class="feature-item">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+          <h5>Docker</h5><p>Containerizacion completa</p>
+        </div>
+        <div class="feature-item">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+          <h5>uvicorn</h5><p>ASGI server async</p>
+        </div>
+        <div class="feature-item">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+          <h5>Vite Build</h5><p>Bundle optimizado</p>
+        </div>
+        <div class="feature-item">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/></svg>
+          <h5>Alembic</h5><p>Migraciones DB</p>
+        </div>
+        <div class="feature-item">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+          <h5>ReportLab</h5><p>Generacion PDF</p>
+        </div>
+        <div class="feature-item">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+          <h5>OAuth2</h5><p>Auth con Authlib</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ARQUITECTURA -->
+    <section id="arquitectura">
+      <div class="section-header">
+        <div class="section-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg></div>
+        <h2>Arquitectura del Sistema</h2>
+      </div>
+      <p>Arquitectura cliente-servidor con separacion clara de capas y comunicacion asincrona.</p>
+
+      <h3>Diagrama de Arquitectura</h3>
+      <div class="diagram"><strong>┌───────────────────────┐</strong>      <strong>┌───────────────────────┐</strong>      <strong>┌───────────────────────┐</strong>
+<strong>│</strong>     <span class="fn">Frontend</span>          <strong>│</strong>─────▶<strong>│</strong>     <span class="fn">Backend API</span>        <strong>│</strong>─────▶<strong>│</strong>     <span class="fn">MySQL 8.0</span>          <strong>│</strong>
+<strong>│</strong>   React 19 + Vite     <strong>│</strong>      <strong>│</strong>   FastAPI + SQLAlchemy <strong>│</strong>      <strong>│</strong>   privacy_compliance <strong>│</strong>
+<strong>│</strong>     <span class="num">:5174</span>             <strong>│</strong>      <strong>│</strong>     <span class="num">:8000</span>             <strong>│</strong>      <strong>│</strong>     <span class="num">:3310</span>             <strong>│</strong>
+<strong>└───────────────────────┘</strong>      <strong>└───────────┬───────────┘</strong>      <strong>└───────────────────────┘</strong>
+                                        <strong>│</strong>
+                                        <strong>▼</strong>
+                               <strong>┌───────────────────────┐</strong>
+                               <strong>│</strong>   <span class="str">OpenRouter AI</span>       <strong>│</strong>
+                               <strong>│</strong>   Google Gemma 4 26B  <strong>│</strong>
+                               <strong>└───────────────────────┘</strong></div>
+
+      <h3>Flujo de Datos</h3>
+      <ol style="padding-left:20px;color:var(--text-secondary);font-size:14px;">
+        <li style="margin-bottom:8px;">El <strong>Frontend</strong> (React) envia requests HTTP/JSON al Backend a traves de Axios con interceptores de autenticacion.</li>
+        <li style="margin-bottom:8px;">El <strong>Backend</strong> (FastAPI) valida el JWT, ejecuta la logica de negocio y consulta MySQL a traves de SQLAlchemy async.</li>
+        <li style="margin-bottom:8px;">Para consultas de <strong>IA</strong>, el Backend reenvia el mensaje a OpenRouter API usando httpx async client.</li>
+        <li style="margin-bottom:8px;">OpenRouter procesa con <strong>Gemma 4 26B</strong> y retorna la respuesta que el Backend formatea y devuelve al Frontend.</li>
+      </ol>
+
+      <h3>Asignacion de Puertos</h3>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Servicio</th><th>Puerto</th><th>Descripcion</th></tr></thead>
+          <tbody>
+            <tr><td><strong>Frontend</strong></td><td><code>:5174</code></td><td>Vite dev server con HMR</td></tr>
+            <tr><td><strong>Backend API</strong></td><td><code>:8000</code></td><td>FastAPI + uvicorn (Swagger en /docs)</td></tr>
+            <tr><td><strong>MySQL</strong></td><td><code>:3310</code></td><td>MySQL 8.0 (mapeado desde :3306)</td></tr>
+            <tr><td><strong>phpMyAdmin</strong></td><td><code>:8080</code></td><td>Admin visual de base de datos</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3>Por que Docker?</h3>
+      <div class="callout">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+        <p>Docker permite replicar el entorno exacto en cualquier maquina, eliminando el problema "funciona en mi PC". Con docker-compose, un solo comando levanta los 3 servicios (backend, MySQL, phpMyAdmin) con redes aisladas, volumenes persistentes y healthchecks configurados.</p>
+      </div>
+    </section>
+
+    <!-- ESTRUCTURA -->
+    <section id="estructura">
+      <div class="section-header">
+        <div class="section-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg></div>
+        <h2>Estructura del Proyecto</h2>
+      </div>
+      <p>Organizacion modular del codigo fuente con separacion clara de responsabilidades.</p>
+
+      <h3>Backend (Python / FastAPI)</h3>
+      <pre><span class="lang-label">bash</span><code>backend/
+├── app/
+│   ├── <span class="fn">main.py</span>              <span class="cmt"># Entry point, CORS, exception handlers</span>
+│   ├── core/
+│   │   ├── <span class="fn">config.py</span>         <span class="cmt"># Settings con pydantic-settings</span>
+│   │   ├── <span class="fn">security.py</span>       <span class="cmt"># JWT (create/verify), hashing Argon2</span>
+│   │   ├── <span class="fn">enums.py</span>          <span class="cmt"># Enumeraciones (roles, estados)</span>
+│   │   └── <span class="fn">exceptions.py</span>     <span class="cmt"># Excepciones custom del dominio</span>
+│   ├── models/                 <span class="cmt"># SQLAlchemy ORM (18 tablas)</span>
+│   ├── schemas/                <span class="cmt"># Pydantic request/response</span>
+│   ├── repositories/           <span class="cmt"># Data access layer</span>
+│   ├── routers/                <span class="cmt"># API endpoints (9 modulos)</span>
+│   ├── services/               <span class="cmt"># Business logic</span>
+│   ├── ai/
+│   │   └── <span class="fn">openrouter.py</span>     <span class="cmt"># Servicio OpenRouter + Gemma 4</span>
+│   └── dependencies/           <span class="cmt"># FastAPI dependency injection</span>
+├── <span class="fn">docker-compose.yml</span>         <span class="cmt"># Backend + MySQL + phpMyAdmin</span>
+├── <span class="fn">Dockerfile</span>                 <span class="cmt"># Build del contenedor backend</span>
+├── <span class="fn">requirements.txt</span>           <span class="cmt"># Dependencias Python</span>
+└── <span class="fn">.env</span>                       <span class="cmt"># Variables de entorno</span></code></pre>
+
+      <h3>Frontend (React / Vite)</h3>
+      <pre><span class="lang-label">bash</span><code>frontend/
+├── src/
+│   ├── <span class="fn">main.jsx</span>              <span class="cmt"># Entry point con providers</span>
+│   ├── components/
+│   │   ├── common/             <span class="cmt"># Componentes reutilizables</span>
+│   │   ├── forms/              <span class="cmt"># Formularios especializados</span>
+│   │   └── layout/             <span class="cmt"># Sidebars, Topbar, BottomNav</span>
+│   ├── contexts/               <span class="cmt"># ThemeContext, ToastContext</span>
+│   ├── layouts/                <span class="cmt"># AdminLayout, CompanyLayout, AuditorLayout</span>
+│   ├── pages/                  <span class="cmt"># Paginas (17 modulos)</span>
+│   ├── routes/                 <span class="cmt"># Definicion de rutas</span>
+│   ├── services/               <span class="cmt"># api.js (Axios), auth.jsx (AuthProvider)</span>
+│   ├── styles/
+│   │   └── <span class="fn">root.css</span>           <span class="cmt"># Variables CSS, tema global</span>
+│   └── assets/                 <span class="cmt"># Logo, imagenes, iconos</span>
+├── <span class="fn">package.json</span>
+├── <span class="fn">vite.config.js</span>
+└── <span class="fn">index.html</span></code></pre>
+    </section>
+
+    <!-- BASE DE DATOS -->
+    <section id="base-de-datos">
+      <div class="section-header">
+        <div class="section-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/></svg></div>
+        <h2>Base de Datos</h2>
+      </div>
+      <p>18 tablas organizadas por dominio con relaciones FK y constraints de integridad.</p>
+
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Tabla</th><th>Descripcion</th><th>Registros</th></tr></thead>
+          <tbody>
+            <tr><td><strong>users</strong></td><td>Usuarios del sistema con roles y empresa asociada</td><td>12</td></tr>
+            <tr><td><strong>companies</strong></td><td>Empresas registradas con NIT y datos de contacto</td><td>6</td></tr>
+            <tr><td><strong>roles</strong></td><td>Roles: Administrador, Admin Empresa, Auditor, Consultor</td><td>4</td></tr>
+            <tr><td><strong>permissions</strong></td><td>9 permisos del sistema (manage_users, view_reports, etc.)</td><td>9</td></tr>
+            <tr><td><strong>role_permissions</strong></td><td>Relacion many-to-many roles-permisos</td><td>18</td></tr>
+            <tr><td><strong>questionnaires</strong></td><td>Cuestionarios de evaluacion</td><td>1</td></tr>
+            <tr><td><strong>questionnaire_versions</strong></td><td>Versiones de cuestionarios</td><td>1</td></tr>
+            <tr><td><strong>question_categories</strong></td><td>Categorias: Politica, PbD, Gobernanza, Seguridad</td><td>4</td></tr>
+            <tr><td><strong>questions</strong></td><td>20 preguntas del cuestionario (5 por categoria)</td><td>20</td></tr>
+            <tr><td><strong>question_options</strong></td><td>Opciones de respuesta para cada pregunta</td><td>0</td></tr>
+            <tr><td><strong>assessments</strong></td><td>Evaluaciones realizadas por empresa</td><td>6</td></tr>
+            <tr><td><strong>assessment_answers</strong></td><td>Respuestas individuales de cada evaluacion</td><td>120</td></tr>
+            <tr><td><strong>assessment_results</strong></td><td>Resultados consolidados por evaluacion</td><td>6</td></tr>
+            <tr><td><strong>category_results</strong></td><td>Resultados desglosados por categoria</td><td>24</td></tr>
+            <tr><td><strong>ai_conversations</strong></td><td>Historial de conversaciones con IA</td><td>0</td></tr>
+            <tr><td><strong>ai_recommendations</strong></td><td>Recomendaciones generadas por IA</td><td>0</td></tr>
+            <tr><td><strong>audit_logs</strong></td><td>Logs de auditoria del sistema</td><td>0</td></tr>
+            <tr><td><strong>notifications</strong></td><td>Notificaciones del sistema</td><td>0</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- AUTENTICACION -->
+    <section id="autenticacion">
+      <div class="section-header">
+        <div class="section-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></div>
+        <h2>Autenticacion y Roles</h2>
+      </div>
+
+      <h3>Flujo JWT</h3>
+      <ol style="padding-left:20px;color:var(--text-secondary);font-size:14px;">
+        <li style="margin-bottom:6px;">El usuario envia email + password al endpoint <code>POST /auth/login</code>.</li>
+        <li style="margin-bottom:6px;">El backend verifica las credenciales con Argon2 y retorna <code>access_token</code> + <code>refresh_token</code>.</li>
+        <li style="margin-bottom:6px;">El Frontend almacena el token en <code>localStorage</code> y lo envia en cada request via header <code>Authorization: Bearer</code>.</li>
+        <li style="margin-bottom:6px;">El backend valida el JWT en cada endpoint protegido usando dependency injection.</li>
+      </ol>
+
+      <h3>Roles del Sistema</h3>
+      <div class="card-grid">
+        <div class="card">
+          <h4><span class="dot" style="background:var(--accent)"></span> Administrador</h4>
+          <p>Acceso completo al sistema. Gestiona empresas, usuarios, cuestionarios y ve todos los reportes globales.</p>
+        </div>
+        <div class="card">
+          <h4><span class="dot" style="background:var(--success)"></span> Admin Empresa</h4>
+          <p>Gestiona su propia empresa. Crea evaluaciones, ve resultados y reportes de su organizacion.</p>
+        </div>
+        <div class="card">
+          <h4><span class="dot" style="background:var(--warning)"></span> Auditor</h4>
+          <p>Revisa evaluaciones asignadas. Ve resultados globales y emite reportes de auditoria.</p>
+        </div>
+        <div class="card">
+          <h4><span class="dot" style="background:var(--purple)"></span> Consultor</h4>
+          <p>Consultor externo con permisos limitados. Accede a datos de la empresa contratante.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ENDPOINTS -->
+    <section id="endpoints">
+      <div class="section-header">
+        <div class="section-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg></div>
+        <h2>API Endpoints (44)</h2>
+      </div>
+
+      <h3>Autenticacion</h3>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Metodo</th><th>Ruta</th><th>Descripcion</th></tr></thead>
+          <tbody>
+            <tr><td><span class="method method-post">POST</span></td><td><code>/auth/register</code></td><td>Registro de empresa y usuario administrador</td></tr>
+            <tr><td><span class="method method-post">POST</span></td><td><code>/auth/login</code></td><td>Inicio de sesion con email y password</td></tr>
+            <tr><td><span class="method method-post">POST</span></td><td><code>/auth/refresh</code></td><td>Renovar access token con refresh token</td></tr>
+            <tr><td><span class="method method-post">POST</span></td><td><code>/auth/logout</code></td><td>Cerrar sesion</td></tr>
+            <tr><td><span class="method method-get">GET</span></td><td><code>/auth/me</code></td><td>Obtener usuario autenticado con rol y permisos</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3>Empresas</h3>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Metodo</th><th>Ruta</th><th>Descripcion</th></tr></thead>
+          <tbody>
+            <tr><td><span class="method method-get">GET</span></td><td><code>/companies/</code></td><td>Listar empresas (paginado)</td></tr>
+            <tr><td><span class="method method-get">GET</span></td><td><code>/companies/{id}</code></td><td>Detalle de empresa</td></tr>
+            <tr><td><span class="method method-post">POST</span></td><td><code>/companies/</code></td><td>Crear empresa</td></tr>
+            <tr><td><span class="method method-put">PUT</span></td><td><code>/companies/{id}</code></td><td>Actualizar empresa</td></tr>
+            <tr><td><span class="method method-delete">DELETE</span></td><td><code>/companies/{id}</code></td><td>Eliminar empresa</td></tr>
+            <tr><td><span class="method method-get">GET</span></td><td><code>/companies/{id}/stats</code></td><td>Estadisticas de empresa</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3>Evaluaciones</h3>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Metodo</th><th>Ruta</th><th>Descripcion</th></tr></thead>
+          <tbody>
+            <tr><td><span class="method method-get">GET</span></td><td><code>/assessments/</code></td><td>Listar evaluaciones</td></tr>
+            <tr><td><span class="method method-get">GET</span></td><td><code>/assessments/{id}</code></td><td>Detalle de evaluacion</td></tr>
+            <tr><td><span class="method method-post">POST</span></td><td><code>/assessments/</code></td><td>Crear evaluacion</td></tr>
+            <tr><td><span class="method method-put">PUT</span></td><td><code>/assessments/{id}</code></td><td>Actualizar evaluacion</td></tr>
+            <tr><td><span class="method method-delete">DELETE</span></td><td><code>/assessments/{id}</code></td><td>Eliminar evaluacion</td></tr>
+            <tr><td><span class="method method-get">GET</span></td><td><code>/assessments/{id}/results</code></td><td>Resultados de evaluacion</td></tr>
+            <tr><td><span class="method method-get">GET</span></td><td><code>/assessments/{id}/categories</code></td><td>Resultados por categoria</td></tr>
+            <tr><td><span class="method method-post">POST</span></td><td><code>/assessments/{id}/answers</code></td><td>Guardar respuestas</td></tr>
+            <tr><td><span class="method method-patch">PATCH</span></td><td><code>/assessments/{id}/complete</code></td><td>Completar evaluacion</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3>Preguntas e IA</h3>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Metodo</th><th>Ruta</th><th>Descripcion</th></tr></thead>
+          <tbody>
+            <tr><td><span class="method method-get">GET</span></td><td><code>/questions/questionnaires</code></td><td>Listar cuestionarios</td></tr>
+            <tr><td><span class="method method-post">POST</span></td><td><code>/questions/questionnaires</code></td><td>Crear cuestionario</td></tr>
+            <tr><td><span class="method method-get">GET</span></td><td><code>/questions/versions/{id}/categories</code></td><td>Categorias de version</td></tr>
+            <tr><td><span class="method method-get">GET</span></td><td><code>/questions/categories/{id}/questions</code></td><td>Preguntas por categoria</td></tr>
+            <tr><td><span class="method method-post">POST</span></td><td><code>/ai/chat</code></td><td>Chat con IA de cumplimiento</td></tr>
+            <tr><td><span class="method method-get">GET</span></td><td><code>/ai/conversations</code></td><td>Historial de conversaciones</td></tr>
+            <tr><td><span class="method method-get">GET</span></td><td><code>/ai/recommendations</code></td><td>Recomendaciones de IA</td></tr>
+            <tr><td><span class="method method-get">GET</span></td><td><code>/dashboard/admin</code></td><td>Estadisticas admin global</td></tr>
+            <tr><td><span class="method method-get">GET</span></td><td><code>/dashboard/company/{id}</code></td><td>Estadisticas de empresa</td></tr>
+            <tr><td><span class="method method-get">GET</span></td><td><code>/dashboard/auditor</code></td><td>Estadisticas de auditor</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- IA -->
+    <section id="ia">
+      <div class="section-header">
+        <div class="section-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2a4 4 0 0 1 4 4c0 2-2 3-4 5-2-2-4-3-4-5a4 4 0 0 1 4-4z"/><path d="M12 22s4-4 4-7a4 4 0 0 0-8 0c0 3 4 7 4 7z"/></svg></div>
+        <h2>Asistente de IA</h2>
+      </div>
+
+      <h3>Como funciona</h3>
+      <p>El asistente utiliza OpenRouter API para conectar con Google Gemma 4 26B, un modelo de lenguaje gratuito. El Backend envia el mensaje del usuario junto con un system prompt que restringe las respuestas exclusivamente a temas de cumplimiento normativo.</p>
+
+      <h3>Temas permitidos</h3>
+      <div class="card-grid">
+        <div class="card"><h4>Ley 1581</h4><p>Proteccion de datos personales en Colombia</p></div>
+        <div class="card"><h4>Decreto 1377</h4><p>Reglamentacion de la Ley 1581</p></div>
+        <div class="card"><h4>Derechos ARCO</h4><p>Acceso, Rectificacion, Cancelacion y Oposicion</p></div>
+        <div class="card"><h4>PbD</h4><p>Privacidad desde el Diseno</p></div>
+        <div class="card"><h4>Gobernanza</h4><p>Comites y responsables de datos</p></div>
+        <div class="card"><h4>Brechas</h4><p>Notificacion de incidentes de seguridad</p></div>
+      </div>
+
+      <div class="callout warning">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+        <p><strong>Restriccion:</strong> Si el usuario pregunta sobre temas fuera de cumplimiento, el asistente redirige amablemente al tema de cumplimiento normativo.</p>
+      </div>
+    </section>
+
+    <!-- UI/UX -->
+    <section id="uiux">
+      <div class="section-header">
+        <div class="section-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="9" y1="21" x2="9" y2="9"/></svg></div>
+        <h2>Funcionalidades UI/UX</h2>
+      </div>
+
+      <div class="card-grid">
+        <div class="card"><h4>Tema Claro/Oscuro</h4><p>Toggle con persistencia en localStorage. Variables CSS para cambio instantaneo.</p></div>
+        <div class="card"><h4>Transiciones de Pagina</h4><p>Animacion fade/slide al navegar entre rutas usando un wrapper PageTransition.</p></div>
+        <div class="card"><h4>Skeleton Loading</h4><p>Estados de carga con shimmer animation para mejorar la percepcion de velocidad.</p></div>
+        <div class="card"><h4>Toast Notifications</h4><p>Sistema de notificaciones success/error/warning con auto-dismiss y animacion.</p></div>
+        <div class="card"><h4>Breadcrumbs</h4><p>Navegacion dinamica basada en la ruta actual.</p></div>
+        <div class="card"><h4>Bottom Nav Movil</h4><p>Navegacion inferior visible en pantallas menores a 768px.</p></div>
+        <div class="card"><h4>Accesibilidad</h4><p>Skip links, focus visible, aria-labels, navegacion por teclado.</p></div>
+        <div class="card"><h4>Responsive</h4><p>Diseno adaptativo con breakpoints en 768px y 1024px.</p></div>
+      </div>
+    </section>
+
+    <!-- CREDENCIALES -->
+    <section id="credenciales">
+      <div class="section-header">
+        <div class="section-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div>
+        <h2>Credenciales de Demostracion</h2>
+      </div>
+
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Rol</th><th>Email</th><th>Contrasena</th><th>Permisos</th></tr></thead>
+          <tbody>
+            <tr><td><span class="tag tag-blue">Super Admin</span></td><td><code>admin@cavaltec.com</code></td><td><code>Admin123!</code></td><td>Acceso completo al sistema</td></tr>
+            <tr><td><span class="tag tag-green">Admin Empresa</span></td><td><code>maria.gomez@segurdata.com</code></td><td><code>Empresa123!</code></td><td>Gestion de su empresa</td></tr>
+            <tr><td><span class="tag tag-orange">Auditor</span></td><td><code>carlos.rodriguez@cavaltec.com</code></td><td><code>Auditor123!</code></td><td>Revision de evaluaciones</td></tr>
+            <tr><td><span class="tag tag-purple">Consultor</span></td><td><code>ana.martinez@cavaltec.com</code></td><td><code>Consultor123!</code></td><td>Consultoria externa</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- INSTALACION -->
+    <section id="instalacion">
+      <div class="section-header">
+        <div class="section-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg></div>
+        <h2>Instalacion y Ejecucion</h2>
+      </div>
+
+      <h3>Prerequisitos</h3>
+      <ul style="padding-left:20px;color:var(--text-secondary);font-size:14px;margin:8px 0;">
+        <li>Docker y Docker Compose</li>
+        <li>Node.js 18+ (para desarrollo frontend)</li>
+      </ul>
+
+      <h3>Iniciar servicios con Docker</h3>
+      <pre><span class="lang-label">bash</span><code><span class="cmt"># Levantar backend, MySQL y phpMyAdmin</span>
+<span class="kw">cd</span> backend
+docker-compose up -d
+
+<span class="cmt"># Verificar que los servicios estan corriendo</span>
+docker-compose ps</code></pre>
+
+      <h3>Frontend (desarrollo)</h3>
+      <pre><span class="lang-label">bash</span><code><span class="kw">cd</span> frontend
+npm install
+npm run dev</code></pre>
+
+      <h3>Urls de acceso</h3>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Servicio</th><th>URL</th></tr></thead>
+          <tbody>
+            <tr><td>Frontend</td><td><code>http://localhost:5174</code></td></tr>
+            <tr><td>Backend API</td><td><code>http://localhost:8000</code></td></tr>
+            <tr><td>Swagger Docs</td><td><code>http://localhost:8000/docs</code></td></tr>
+            <tr><td>phpMyAdmin</td><td><code>http://localhost:8080</code></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- VERCEL -->
+    <section id="vercel">
+      <div class="section-header">
+        <div class="section-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg></div>
+        <h2>Despliegue en Vercel</h2>
+      </div>
+
+      <p>El frontend React puede desplegarse en Vercel como aplicacion estatica.</p>
+
+      <h3>Configuracion vercel.json</h3>
+      <pre><span class="lang-label">json</span><code>{
+  <span class="str">"buildCommand"</span>: <span class="str">"npm run build"</span>,
+  <span class="str">"outputDirectory"</span>: <span class="str">"dist"</span>,
+  <span class="str">"framework"</span>: <span class="str">"vite"</span>,
+  <span class="str">"rewrites"</span>: [
+    { <span class="str">"source"</span>: <span class="str">"/(.*)"</span>, <span class="str">"destination"</span>: <span class="str">"/index.html"</span> }
+  ]
+}</code></pre>
+
+      <h3>Pasos</h3>
+      <ol style="padding-left:20px;color:var(--text-secondary);font-size:14px;">
+        <li style="margin-bottom:6px;">Conectar el repositorio GitHub a Vercel.</li>
+        <li style="margin-bottom:6px;">Configurar el root directory como <code>frontend</code>.</li>
+        <li style="margin-bottom:6px;">Agregar variable de entorno <code>VITE_API_URL</code> con la URL del backend.</li>
+        <li style="margin-bottom:6px;">Vercel detecta automaticamente Vite y ejecuta <code>npm run build</code>.</li>
+        <li style="margin-bottom:6px;">Los rewrites en vercel.json redirigen todas las rutas al SPA.</li>
+      </ol>
+
+      <div class="callout">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+        <p><strong>Nota:</strong> El backend debe estar desplegado por separado (Railway, Render, Fly.io, o un VPS con Docker). El frontend solo necesita la URL del backend en la variable <code>VITE_API_URL</code>.</p>
+      </div>
+    </section>
+
+    <!-- DECISIONES -->
+    <section id="decisiones">
+      <div class="section-header">
+        <div class="section-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg></div>
+        <h2>Decisiones Tecnicas</h2>
+      </div>
+
+      <div class="card-grid">
+        <div class="card">
+          <h4>FastAPI sobre Flask/Django</h4>
+          <p>Performance async nativa, documentacion Swagger automatica, validacion con Pydantic, dependency injection.</p>
+        </div>
+        <div class="card">
+          <h4>MySQL sobre PostgreSQL</h4>
+          <p>Mayor compatibilidad con herramientas como phpMyAdmin, amplio soporte en hosting, suficiente para el volumen de datos.</p>
+        </div>
+        <div class="card">
+          <h4>Docker Compose</h4>
+          <p>Un solo comando levanta todo el stack. Replicabilidad garantizada, sin configurar MySQL manualmente.</p>
+        </div>
+        <div class="card">
+          <h4>Argon2 sobre bcrypt</h4>
+          <p>Ganador del Password Hashing Competition. Memory-hard, resistente a ataques GPU, configurable en memoria y tiempo.</p>
+        </div>
+        <div class="card">
+          <h4>OpenRouter sobre OpenAI</h4>
+          <p>Acceso gratuito a multiples modelos. Sin tarjeta de credito. Cambio dinamico de modelos sin modificar codigo.</p>
+        </div>
+        <div class="card">
+          <h4>Recharts sobre Chart.js</h4>
+          <p>API declarativa React-native, basado en D3.js, mejor integracion con React, tipado completo.</p>
+        </div>
+      </div>
+    </section>
+
+  </div>
+
+  <footer class="footer">
+    <p>CAVALTEC - Documentacion Tecnica v1.0</p>
+    <p style="margin-top:4px;">Hackathon Medellin 2026</p>
+  </footer>
+</div>
+</div>
+</body>
+</html>

@@ -14,12 +14,14 @@ const preguntas = [
 ]
 
 function AdminPreguntas() {
+  const notify = (msg) => window.dispatchEvent(new CustomEvent('toast', { detail: { type: 'info', message: msg } }))
+
   return (
     <>
       <PageHeader
         title="Preguntas"
         subtitle="Banco de preguntas para cuestionarios"
-        actions={<Button variant="primary"><FiPlus size={16} /> Nueva pregunta</Button>}
+        actions={<Button variant="primary" onClick={() => notify('Abriendo formulario de nueva pregunta...')}><FiPlus size={16} /> Nueva pregunta</Button>}
       />
       <div className="preguntas-list">
         {preguntas.map((p, i) => (

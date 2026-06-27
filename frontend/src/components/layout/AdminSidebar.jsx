@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { NavLink, useNavigate } from 'react-router-dom'
 import { FiGrid, FiUsers, FiUserCheck, FiFileText, FiHelpCircle, FiLayers, FiCheckCircle, FiBarChart2, FiCpu, FiShield, FiSettings, FiUser, FiLogOut, FiChevronLeft, FiChevronRight } from 'react-icons/fi'
 import { useAuth } from '../../services/auth'
+import logoNegro from '../../assets/log_negro-s.png'
 import './Sidebar.css'
 
 const menuSections = [
@@ -58,7 +59,7 @@ function AdminSidebar() {
     <aside className={`sidebar ${collapsed ? 'sidebar--collapsed' : ''}`} role="navigation" aria-label="Menú principal">
       <div className="sidebar-header">
         <NavLink to="/admin/dashboard" className="sidebar-logo">
-          <span className="sidebar-logo-icon">C</span>
+          <img src={logoNegro} alt="CavalcTec" className="sidebar-logo-img" />
           {!collapsed && <span className="sidebar-logo-text">CAVALTEC</span>}
         </NavLink>
         <button

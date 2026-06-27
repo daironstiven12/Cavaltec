@@ -50,11 +50,6 @@ const columns = [
   },
 ]
 
-const rowActions = [
-  { label: 'Ver detalle', icon: <FiEye size={14} />, onClick: (row) => {} },
-  { label: 'Editar', icon: <FiEdit2 size={14} />, onClick: (row) => {} },
-]
-
 const quickFilters = [
   { label: 'Activas', value: 'Activa' },
   { label: 'Inactivas', value: 'Inactiva' },
@@ -64,6 +59,13 @@ function Empresas() {
   const [viewMode, setViewMode] = useState('table')
   const [companies, setCompanies] = useState([])
   const [loading, setLoading] = useState(true)
+
+  const notify = (msg) => window.dispatchEvent(new CustomEvent('toast', { detail: { type: 'info', message: msg } }))
+
+  const rowActions = [
+    { label: 'Ver detalle', icon: <FiEye size={14} />, onClick: (row) => notify(`Abriendo detalle de ${row.business_name}...`) },
+    { label: 'Editar', icon: <FiEdit2 size={14} />, onClick: (row) => notify(`Editando empresa ${row.business_name}...`) },
+  ]
 
   useEffect(() => {
     const fetchCompanies = async () => {
@@ -89,7 +91,7 @@ function Empresas() {
         title="Empresas"
         subtitle="Gestión de empresas registradas en la plataforma"
         actions={
-          <Button variant="primary">
+          <Button variant="primary" onClick={() => notify('Abriendo formulario de nueva empresa...')}>
             <FiPlus size={16} /> Nueva empresa
           </Button>
         }
@@ -120,7 +122,7 @@ function Empresas() {
       ) : viewMode === 'cards' ? (
         <div className="empresas-cards">
           {companies.map((c, i) => (
-            <div key={c.id || i} className="empresa-card">
+            <div key={c.id || i} className="empresa-card" onClick={() => notify(`Abriendo detalle de ${c.business_name}...`)} style={{ cursor: 'pointer' }}>
               <div className="empresa-card-header">
                 <div className="empresa-card-avatar">{(c.business_name || 'E').charAt(0)}</div>
                 <Badge variant={c.status === 'Activa' ? 'success' : 'default'}>{c.status || 'Activa'}</Badge>

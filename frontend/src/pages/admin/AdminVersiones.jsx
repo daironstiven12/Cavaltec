@@ -25,18 +25,20 @@ const columns = [
   },
 ]
 
-const rowActions = [
-  { label: 'Restaurar', icon: <FiRotateCcw size={14} />, onClick: (row) => {} },
-  { label: 'Archivar', icon: <FiArchive size={14} />, onClick: (row) => {} },
-]
-
 function AdminVersiones() {
+  const notify = (msg) => window.dispatchEvent(new CustomEvent('toast', { detail: { type: 'info', message: msg } }))
+
+  const rowActions = [
+    { label: 'Restaurar', icon: <FiRotateCcw size={14} />, onClick: (row) => notify(`Restaurando versión ${row.version}...`) },
+    { label: 'Archivar', icon: <FiArchive size={14} />, onClick: (row) => notify(`Archivando versión ${row.version}...`) },
+  ]
+
   return (
     <>
       <PageHeader
         title="Versiones"
         subtitle="Historial de versiones de cuestionarios"
-        actions={<Button variant="primary"><FiPlus size={16} /> Nueva versión</Button>}
+        actions={<Button variant="primary" onClick={() => notify('Creando nueva versión...')}><FiPlus size={16} /> Nueva versión</Button>}
       />
       <DataTable
         columns={columns}

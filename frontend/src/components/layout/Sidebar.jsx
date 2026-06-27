@@ -2,6 +2,8 @@ import { useState } from 'react'
 import { NavLink, useNavigate } from 'react-router-dom'
 import { FiGrid, FiFilePlus, FiClock, FiBarChart2, FiUsers, FiFileText, FiUser, FiSettings, FiLogOut, FiChevronLeft, FiChevronRight, FiCpu, FiHelpCircle } from 'react-icons/fi'
 import './Sidebar.css'
+import Logo from '../common/Logo'
+
 
 const menuItems = [
   { to: '/dashboard', icon: FiGrid, label: 'Dashboard' },
@@ -28,8 +30,7 @@ function Sidebar() {
     <aside className={`sidebar ${collapsed ? 'sidebar--collapsed' : ''}`}>
       <div className="sidebar-header">
         <NavLink to="/dashboard" className="sidebar-logo">
-          <span className="sidebar-logo-icon">C</span>
-          {!collapsed && <span className="sidebar-logo-text">CAVALTEC</span>}
+        <Logo />
         </NavLink>
         <button className="sidebar-collapse-btn" onClick={() => setCollapsed((c) => !c)} aria-label={collapsed ? 'Expandir sidebar' : 'Colapsar sidebar'}>
           {collapsed ? <FiChevronRight size={18} /> : <FiChevronLeft size={18} />}

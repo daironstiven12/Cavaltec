@@ -43,24 +43,26 @@ const columns = [
   },
 ]
 
-const rowActions = [
-  { label: 'Ver reporte', icon: <FiEye size={14} />, onClick: (row) => {} },
-  { label: 'Descargar', icon: <FiDownload size={14} />, onClick: (row) => {} },
-]
-
-const quickFilters = [
-  { label: 'Completados', value: 'Completado' },
-  { label: 'Pendientes', value: 'Pendiente' },
-]
-
 function Reportes() {
+  const notify = (msg) => window.dispatchEvent(new CustomEvent('toast', { detail: { type: 'info', message: msg } }))
+
+  const rowActions = [
+    { label: 'Ver reporte', icon: <FiEye size={14} />, onClick: (row) => notify(`Abriendo reporte "${row.name}"...`) },
+    { label: 'Descargar', icon: <FiDownload size={14} />, onClick: (row) => notify(`Descargando reporte "${row.name}"...`) },
+  ]
+
+  const quickFilters = [
+    { label: 'Completados', value: 'Completado' },
+    { label: 'Pendientes', value: 'Pendiente' },
+  ]
+
   return (
     <>
       <PageHeader
         title="Reportes"
         subtitle="Descarga y gestiona los reportes generados"
         actions={
-          <Button variant="primary">
+          <Button variant="primary" onClick={() => notify('Generando nuevo reporte...')}>
             <FiFileText size={16} /> Generar reporte
           </Button>
         }

@@ -10,7 +10,15 @@ function Topbar({ title }) {
   const { isDark, toggleTheme } = useTheme()
   const navigate = useNavigate()
   const [menuOpen, setMenuOpen] = useState(false)
+  const [notifOpen, setNotifOpen] = useState(false)
   const menuRef = useRef(null)
+  const notifRef = useRef(null)
+
+  const notifications = [
+    { id: 1, text: 'Nueva evaluación completada por TechCorp', time: 'Hace 5 min', read: false },
+    { id: 2, text: 'Recordatorio: vencimiento de evaluación Pendiente', time: 'Hace 1 hora', read: false },
+    { id: 3, text: 'Informe semanal de cumplimiento disponible', time: 'Ayer', read: false },
+  ]
 
   const initials = user
     ? `${user.first_name?.[0] || ''}${user.last_name?.[0] || ''}`.toUpperCase()
@@ -22,6 +30,9 @@ function Topbar({ title }) {
     const handleClick = (e) => {
       if (menuRef.current && !menuRef.current.contains(e.target)) {
         setMenuOpen(false)
+      }
+      if (notifRef.current && !notifRef.current.contains(e.target)) {
+        setNotifOpen(false)
       }
     }
     document.addEventListener('mousedown', handleClick)
@@ -58,10 +69,39 @@ function Topbar({ title }) {
           {isDark ? <FiSun size={18} /> : <FiMoon size={18} />}
         </button>
 
-        <button className="topbar-icon-btn topbar-notification" aria-label="Notificaciones">
-          <FiBell size={20} />
-          <span className="topbar-notification-badge">3</span>
-        </button>
+        <div className="topbar-notif-wrapper" ref={notifRef}>
+          <button
+            className="topbar-icon-btn topbar-notification"
+            aria-label="Notificaciones"
+            onClick={() => setNotifOpen(!notifOpen)}
+          >
+            <FiBell size={20} />
+            <span className="topbar-notification-badge">3</span>
+          </button>
+          {notifOpen && (
+            <div className="topbar-dropdown topbar-notif-dropdown" role="menu">
+              <div className="topbar-dropdown-header">
+                <span style={{ fontWeight: 600, fontSize: 14 }}>Notificaciones</span>
+                <span className="topbar-notif-count">3 nuevas</span>
+              </div>
+              <div className="topbar-dropdown-divider" />
+              {notifications.map(n => (
+                <div key={n.id} className="topbar-notif-item">
+                  <div className="topbar-notif-dot" />
+                  <div className="topbar-notif-body">
+                    <p className="topbar-notif-text">{n.text}</p>
+                    <span className="topbar-notif-time">{n.time}</span>
+                  </div>
+                </div>
+              ))}
+              <div className="topbar-dropdown-divider" />
+              <button className="topbar-dropdown-item" onClick={() => setNotifOpen(false)}>
+                <FiBell size={16} />
+                <span>Ver todas</span>
+              </button>
+            </div>
+          )}
+        </div>
 
         <div className="topbar-user-wrapper" ref={menuRef}>
           <button

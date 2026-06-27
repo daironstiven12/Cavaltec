@@ -387,3 +387,32 @@
     grid-template-columns: 1fr;
   }
 }
+
+/* === PRINT STYLES === */
+@media print {
+  .topbar, .sidebar, .bottom-nav, .page-header-actions, .plan-view-all {
+    display: none !important;
+  }
+
+  body {
+    background: white !important;
+    color: black !important;
+  }
+
+  .main-content {
+    padding: 0 !important;
+    margin: 0 !important;
+  }
+
+  .resultados-summary,
+  .resultados-grid,
+  .resultados-trends {
+    break-inside: avoid;
+  }
+
+  .section-card {
+    box-shadow: none !important;
+    border: 1px solid #ddd !important;
+    break-inside: avoid;
+  }
+}

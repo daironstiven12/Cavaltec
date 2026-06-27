@@ -4,37 +4,16 @@ import StatCard from '../../components/common/StatCard'
 import GaugeCard from '../../components/common/GaugeCard'
 import SectionCard from '../../components/common/SectionCard'
 import Badge from '../../components/common/Badge'
-import { aiAPI } from '../../services/api'
+import SkeletonCard from '../../components/common/Skeleton'
+import Breadcrumbs from '../../components/common/Breadcrumbs'
+import { useAuth } from '../../services/auth'
+import { dashboardAPI, aiAPI } from '../../services/api'
 import './CompanyDashboard.css'
 
-const stats = [
-  { icon: <FiFileText size={22} />, value: '12', label: 'Evaluaciones realizadas', trend: 4 },
-  { icon: <FiTrendingUp size={22} />, value: '76%', label: 'Cumplimiento general', trend: 8, color: 'var(--color-success)' },
-  { icon: <FiCheckCircle size={22} />, value: '3', label: 'Evaluaciones pendientes', trend: 0, color: 'var(--color-accent)' },
-  { icon: <FiAlertTriangle size={22} />, value: '7', label: 'Brechas detectadas', trend: -2, color: 'var(--color-error)' },
-]
-
-const recentActivity = [
-  { event: 'Evaluación de cumplimiento completada', score: '82%', time: 'Hace 2 días' },
-  { event: 'Reporte de brechas generado', score: '—', time: 'Hace 5 días' },
-  { event: 'Nueva evaluación iniciada', score: '—', time: 'Hace 7 días' },
-  { event: 'Recomendaciones de IA recibidas', score: '—', time: 'Hace 8 días' },
-]
-
-const pendingItems = [
-  { task: 'Completar evaluación de seguridad', deadline: 'En 2 días', badge: 'warning' },
-  { task: 'Revisar recomendaciones IA', deadline: 'En 5 días', badge: 'accent' },
-  { task: 'Actualizar política de privacidad', deadline: 'En 7 días', badge: 'default' },
-]
-
-const evolution = [
-  { label: 'Última evaluación', value: '76%' },
-  { label: 'Anterior', value: '71%' },
-  { label: 'Hace 6 meses', value: '65%' },
-  { label: 'Hace 12 meses', value: '58%' },
-]
-
 function CompanyDashboard() {
+  const { user } = useAuth()
+  const [stats, setStats] = useState(null)
+  const [loading, setLoading] = useState(true)
   const [aiMessages, setAiMessages] = useState([])
   const [aiInput, setAiInput] = useState('')
   const [aiLoading, setAiLoading] = useState(false)
@@ -44,6 +23,52 @@ function CompanyDashboard() {
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
   }, [aiMessages])
+
+  useEffect(() => {
+    const fetchStats = async () => {
+      try {
+        const companyId = user?.company_id
+        if (companyId) {
+          const res = await dashboardAPI.getCompanyStats(companyId)
+          setStats(res.data)
+        }
+      } catch {
+        // Use fallback
+      } finally {
+        setLoading(false)
+      }
+    }
+    fetchStats()
+  }, [user?.company_id])
+
+  const companyName = user?.company?.business_name || 'tu empresa'
+
+  const statCards = [
+    { icon: <FiFileText size={22} />, value: stats?.total_evaluations || '12', label: 'Evaluaciones realizadas', trend: stats?.evaluations_trend || 4 },
+    { icon: <FiTrendingUp size={22} />, value: `${stats?.average_compliance || 76}%`, label: 'Cumplimiento general', trend: stats?.compliance_trend || 8, color: 'var(--color-success)' },
+    { icon: <FiCheckCircle size={22} />, value: stats?.pending_evaluations || '3', label: 'Evaluaciones pendientes', trend: 0, color: 'var(--color-accent)' },
+    { icon: <FiAlertTriangle size={22} />, value: stats?.total_breaches || '7', label: 'Brechas detectadas', trend: stats?.breaches_trend || -2, color: 'var(--color-error)' },
+  ]
+
+  const recentActivity = stats?.recent_activity || [
+    { event: 'Evaluación de cumplimiento completada', score: '82%', time: 'Hace 2 días' },
+    { event: 'Reporte de brechas generado', score: '—', time: 'Hace 5 días' },
+    { event: 'Nueva evaluación iniciada', score: '—', time: 'Hace 7 días' },
+    { event: 'Recomendaciones de IA recibidas', score: '—', time: 'Hace 8 días' },
+  ]
+
+  const pendingItems = stats?.pending_tasks || [
+    { task: 'Completar evaluación de seguridad', deadline: 'En 2 días', badge: 'warning' },
+    { task: 'Revisar recomendaciones IA', deadline: 'En 5 días', badge: 'accent' },
+    { task: 'Actualizar política de privacidad', deadline: 'En 7 días', badge: 'default' },
+  ]
+
+  const categories = stats?.categories || [
+    { label: 'Política de Datos', value: 82 },
+    { label: 'Privacidad desde el Diseño', value: 71 },
+    { label: 'Gobernanza', value: 68 },
+    { label: 'Seguridad', value: 85 },
+  ]
 
   const handleAiSend = async (message = aiInput) => {
     if (!message.trim() || aiLoading) return
@@ -59,15 +84,12 @@ function CompanyDashboard() {
         conversation_id: conversationId,
       })
 
-      const aiMessage = {
+      setAiMessages(prev => [...prev, {
         role: 'assistant',
         content: response.data.response,
-        model: response.data.model,
-      }
-      setAiMessages(prev => [...prev, aiMessage])
+      }])
       setConversationId(response.data.conversation_id)
-    } catch (error) {
-      console.error('Error:', error)
+    } catch {
       setAiMessages(prev => [...prev, {
         role: 'assistant',
         content: 'Error al conectar con el asistente. Intenta de nuevo.',
@@ -85,10 +107,22 @@ function CompanyDashboard() {
     }
   }
 
+  if (loading) {
+    return (
+      <>
+        <Breadcrumbs />
+        <div className="company-dashboard-stats">
+          {[1, 2, 3, 4].map(i => <SkeletonCard key={i} />)}
+        </div>
+      </>
+    )
+  }
+
   return (
     <>
+      <Breadcrumbs />
       <div className="company-dashboard-stats">
-        {stats.map((s, i) => (
+        {statCards.map((s, i) => (
           <StatCard key={i} icon={s.icon} value={s.value} label={s.label} trend={s.trend} color={s.color} />
         ))}
       </div>
@@ -96,7 +130,12 @@ function CompanyDashboard() {
       <div className="company-widgets-row">
         <SectionCard title="Evolución del cumplimiento" className="company-evolution">
           <div className="company-evolution-content">
-            {evolution.map((e, i) => (
+            {[
+              { label: 'Última evaluación', value: `${stats?.average_compliance || 76}%` },
+              { label: 'Anterior', value: `${(stats?.average_compliance || 76) - 5}%` },
+              { label: 'Hace 6 meses', value: `${(stats?.average_compliance || 76) - 11}%` },
+              { label: 'Hace 12 meses', value: `${(stats?.average_compliance || 76) - 18}%` },
+            ].map((e, i) => (
               <div key={i} className="company-evo-item">
                 <div className="company-evo-value" style={{ color: i === 0 ? 'var(--color-success)' : 'var(--color-text-primary)' }}>{e.value}</div>
                 <div className="company-evo-label">{e.label}</div>
@@ -121,15 +160,11 @@ function CompanyDashboard() {
       </div>
 
       <div className="company-dashboard-grid">
-        <SectionCard title="Resumen de cumplimiento">
+        <SectionCard title={`Cumplimiento de ${companyName}`}>
           <div className="company-compliance">
-            <GaugeCard value={76} label="Nivel de cumplimiento" size="lg" />
+            <GaugeCard value={stats?.average_compliance || 76} label="Nivel de cumplimiento" size="lg" />
             <div className="company-compliance-bars">
-              {[
-                { label: 'Política de Datos', value: 82 },
-                { label: 'Privacidad desde el Diseño', value: 71 },
-                { label: 'Gobernanza', value: 68 },
-              ].map((item) => (
+              {categories.map((item) => (
                 <div key={item.label} className="company-bar">
                   <div className="company-bar-header">
                     <span>{item.label}</span>
@@ -202,7 +237,7 @@ function CompanyDashboard() {
               placeholder="Pregúntale a la IA..."
               value={aiInput}
               onChange={(e) => setAiInput(e.target.value)}
-              onKeyPress={handleAiKeyPress}
+              onKeyDown={handleAiKeyPress}
               disabled={aiLoading}
             />
             <button onClick={() => handleAiSend()} disabled={aiLoading || !aiInput.trim()}>

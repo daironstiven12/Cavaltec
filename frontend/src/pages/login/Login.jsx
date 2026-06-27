@@ -4,7 +4,43 @@ import { useAuth } from '../../services/auth'
 import AuthLayout from '../../components/layout/AuthLayout'
 import Input from '../../components/forms/Input'
 import GoogleIcon from '../../components/common/GoogleIcon'
+import { FiShield, FiBriefcase, FiEye, FiHeadphones } from 'react-icons/fi'
 import './Login.css'
+
+const demoCredentials = [
+  {
+    role: 'Super Admin',
+    email: 'admin@cavaltec.com',
+    password: 'Admin123!',
+    icon: <FiShield size={16} />,
+    color: 'var(--color-accent)',
+    description: 'Vista completa del sistema',
+  },
+  {
+    role: 'Admin Empresa',
+    email: 'maria.gomez@segurdata.com',
+    password: 'Empresa123!',
+    icon: <FiBriefcase size={16} />,
+    color: 'var(--color-success)',
+    description: 'Gestión de su empresa',
+  },
+  {
+    role: 'Auditor',
+    email: 'carlos.rodriguez@cavaltec.com',
+    password: 'Auditor123!',
+    icon: <FiEye size={16} />,
+    color: 'var(--color-warning)',
+    description: 'Revisión de evaluaciones',
+  },
+  {
+    role: 'Consultor',
+    email: 'ana.martinez@cavaltec.com',
+    password: 'Consultor123!',
+    icon: <FiHeadphones size={16} />,
+    color: '#8b5cf6',
+    description: 'Consultoría externa',
+  },
+]
 
 function Login() {
   const navigate = useNavigate()
@@ -14,10 +50,6 @@ function Login() {
   const [rememberMe, setRememberMe] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState('')
-
-  const demoCredentials = {
-    admin: { email: 'admin@cavaltec.com', password: 'Admin123!' },
-  }
 
   const handleSubmit = async (e) => {
     e.preventDefault()
@@ -42,10 +74,9 @@ function Login() {
     }
   }
 
-  const fillDemoCredentials = (role) => {
-    const creds = demoCredentials[role]
-    setEmail(creds.email)
-    setPassword(creds.password)
+  const fillDemoCredentials = (cred) => {
+    setEmail(cred.email)
+    setPassword(cred.password)
     setError('')
   }
 
@@ -136,7 +167,6 @@ function Login() {
           type="button"
           className="btn btn-google btn-lg btn-block login-google"
           onClick={() => {
-            // Simulación de login con Google
             setIsLoading(true)
             setTimeout(() => {
               setIsLoading(false)
@@ -149,6 +179,8 @@ function Login() {
           Continuar con Google
         </button>
       </form>
+
+    
     </AuthLayout>
   )
 }

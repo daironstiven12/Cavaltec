@@ -43,7 +43,8 @@ function PanelIA() {
   const loadConversations = async () => {
     try {
       const response = await aiAPI.getConversations()
-      setConversations(response.data)
+      const data = response.data
+      setConversations(data?.value || data || [])
     } catch (error) {
       console.error('Error loading conversations:', error)
     }

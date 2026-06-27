@@ -245,6 +245,60 @@
   color: var(--color-error);
 }
 
+/* === NOTIFICATIONS DROPDOWN === */
+.topbar-notif-wrapper {
+  position: relative;
+}
+
+.topbar-notif-dropdown {
+  width: 320px;
+}
+
+.topbar-notif-count {
+  font-size: 12px;
+  color: var(--color-accent);
+  font-weight: 500;
+}
+
+.topbar-notif-item {
+  display: flex;
+  gap: 10px;
+  padding: 10px 8px;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: background var(--transition-fast);
+}
+
+.topbar-notif-item:hover {
+  background: var(--color-bg-tertiary);
+}
+
+.topbar-notif-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--color-accent);
+  flex-shrink: 0;
+  margin-top: 6px;
+}
+
+.topbar-notif-body {
+  flex: 1;
+  min-width: 0;
+}
+
+.topbar-notif-text {
+  font-size: 13px;
+  color: var(--color-text-primary);
+  line-height: 1.4;
+  margin: 0;
+}
+
+.topbar-notif-time {
+  font-size: 11px;
+  color: var(--color-text-tertiary);
+}
+
 @media (max-width: 768px) {
   .topbar {
     padding: 0 16px;

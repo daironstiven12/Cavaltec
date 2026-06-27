@@ -50,6 +50,17 @@
   flex-shrink: 0;
 }
 
+.sidebar-logo-img {
+  height: 22px;
+  width: auto;
+  object-fit: contain;
+  flex-shrink: 0;
+}
+
+.sidebar--collapsed .sidebar-logo-img {
+  height: 18px;
+}
+
 .sidebar-logo-text {
   white-space: nowrap;
   overflow: hidden;

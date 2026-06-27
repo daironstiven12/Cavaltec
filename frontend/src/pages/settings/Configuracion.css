@@ -149,6 +149,46 @@
   left: 22px;
 }
 
+.config-input {
+  padding: 6px 12px;
+  font-size: 14px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background: var(--color-bg);
+  color: var(--color-text-primary);
+  outline: none;
+  transition: border-color var(--transition-fast);
+  width: 200px;
+}
+
+.config-input:focus {
+  border-color: var(--color-accent);
+  box-shadow: 0 0 0 3px var(--color-accent-subtle);
+}
+
+.config-btn-row {
+  display: flex;
+  gap: 12px;
+  margin-top: 8px;
+}
+
+.config-cancel-btn {
+  padding: 8px 20px;
+  font-size: 14px;
+  font-weight: 500;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background: var(--color-bg);
+  color: var(--color-text-secondary);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.config-cancel-btn:hover {
+  background: var(--color-bg-tertiary);
+  color: var(--color-text-primary);
+}
+
 @media (max-width: 768px) {
   .config-field {
     flex-direction: column;

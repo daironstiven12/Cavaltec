@@ -26,19 +26,21 @@ const columns = [
   },
 ]
 
-const rowActions = [
-  { label: 'Editar', icon: <FiEdit2 size={14} />, onClick: (row) => {} },
-  { label: 'Duplicar', icon: <FiCopy size={14} />, onClick: (row) => {} },
-  { label: 'Archivar', icon: <FiArchive size={14} />, onClick: (row) => {} },
-]
-
 function AdminCuestionarios() {
+  const notify = (msg) => window.dispatchEvent(new CustomEvent('toast', { detail: { type: 'info', message: msg } }))
+
+  const rowActions = [
+    { label: 'Editar', icon: <FiEdit2 size={14} />, onClick: (row) => notify(`Editando cuestionario "${row.name}"...`) },
+    { label: 'Duplicar', icon: <FiCopy size={14} />, onClick: (row) => notify(`Duplicando cuestionario "${row.name}"...`) },
+    { label: 'Archivar', icon: <FiArchive size={14} />, onClick: (row) => notify(`Archivando cuestionario "${row.name}"...`) },
+  ]
+
   return (
     <>
       <PageHeader
         title="Cuestionarios"
         subtitle="Administración de cuestionarios de evaluación"
-        actions={<Button variant="primary"><FiPlus size={16} /> Nuevo cuestionario</Button>}
+        actions={<Button variant="primary" onClick={() => notify('Abriendo formulario de nuevo cuestionario...')}><FiPlus size={16} /> Nuevo cuestionario</Button>}
       />
       <DataTable
         columns={columns}
