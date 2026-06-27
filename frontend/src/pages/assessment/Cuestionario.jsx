@@ -1,7 +1,8 @@
-import { useState, useRef, useEffect } from 'react'
-import { FiArrowLeft, FiArrowRight, FiSave, FiCpu, FiSend, FiLoader } from 'react-icons/fi'
+import { useState, useRef, useEffect, useCallback } from 'react'
+import { FiArrowLeft, FiArrowRight, FiSave, FiCpu, FiSend, FiLoader, FiClock, FiCheck } from 'react-icons/fi'
 import ProgressBar from '../../components/common/ProgressBar'
 import Badge from '../../components/common/Badge'
+import Breadcrumbs from '../../components/common/Breadcrumbs'
 import { aiAPI } from '../../services/api'
 import './Cuestionario.css'
 
@@ -32,9 +33,11 @@ const questions = [
   },
 ]
 
+const optionKeys = ['Sí', 'No', 'Parcialmente', 'No aplica']
+
 function Cuestionario() {
   const [currentIdx, setCurrentIdx] = useState(0)
-  const [selectedOption, setSelectedOption] = useState(null)
+  const [answers, setAnswers] = useState({})
   const [aiHelp, setAiHelp] = useState('')
   const [aiLoading, setAiLoading] = useState(false)
   const [aiMessages, setAiMessages] = useState([])
@@ -43,12 +46,15 @@ function Cuestionario() {
   const messagesEndRef = useRef(null)
 
   const currentQuestion = questions[currentIdx]
+  const selectedOption = answers[currentIdx] || null
+  const answeredCount = Object.keys(answers).length
+  const estimatedMinutes = Math.max(1, Math.round((questions.length - answeredCount) * 0.5))
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
   }, [aiMessages])
 
-  const handleAiHelp = async () => {
+  const handleAiHelp = useCallback(async () => {
     if (aiLoading) return
     setAiLoading(true)
     try {
@@ -58,14 +64,14 @@ function Cuestionario() {
       })
       setAiHelp(response.data.response)
       setConversationId(response.data.conversation_id)
-    } catch (error) {
+    } catch {
       setAiHelp('No se pudo obtener ayuda de la IA en este momento.')
     } finally {
       setAiLoading(false)
     }
-  }
+  }, [aiLoading, currentQuestion, conversationId])
 
-  const handleAiSend = async (message = aiInput) => {
+  const handleAiSend = useCallback(async (message = aiInput) => {
     if (!message.trim() || aiLoading) return
 
     const userMessage = { role: 'user', content: message.trim() }
@@ -79,13 +85,12 @@ function Cuestionario() {
         conversation_id: conversationId,
       })
 
-      const aiMessage = {
+      setAiMessages(prev => [...prev, {
         role: 'assistant',
         content: response.data.response,
-      }
-      setAiMessages(prev => [...prev, aiMessage])
+      }])
       setConversationId(response.data.conversation_id)
-    } catch (error) {
+    } catch {
       setAiMessages(prev => [...prev, {
         role: 'assistant',
         content: 'Error al conectar con la IA.',
@@ -94,7 +99,7 @@ function Cuestionario() {
     } finally {
       setAiLoading(false)
     }
-  }
+  }, [aiInput, aiLoading, currentQuestion, conversationId])
 
   const handleAiKeyPress = (e) => {
     if (e.key === 'Enter' && !e.shiftKey) {
@@ -106,7 +111,6 @@ function Cuestionario() {
   const handleNext = () => {
     if (currentIdx < questions.length - 1) {
       setCurrentIdx(prev => prev + 1)
-      setSelectedOption(null)
       setAiHelp('')
       setAiMessages([])
     }
@@ -115,139 +119,183 @@ function Cuestionario() {
   const handlePrev = () => {
     if (currentIdx > 0) {
       setCurrentIdx(prev => prev - 1)
-      setSelectedOption(null)
       setAiHelp('')
       setAiMessages([])
     }
   }
 
+  const handleSelectOption = (opt) => {
+    setAnswers(prev => ({ ...prev, [currentIdx]: opt }))
+  }
+
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return
+
+      if (e.key === 'ArrowRight' || e.key === 'ArrowDown') {
+        e.preventDefault()
+        handleNext()
+      } else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') {
+        e.preventDefault()
+        handlePrev()
+      } else if (e.key >= '1' && e.key <= '4') {
+        e.preventDefault()
+        handleSelectOption(optionKeys[parseInt(e.key) - 1])
+      }
+    }
+    window.addEventListener('keydown', handleKeyDown)
+    return () => window.removeEventListener('keydown', handleKeyDown)
+  }, [currentIdx])
+
   return (
-    <div className="cuestionario-layout">
-      <div className="cuestionario-main">
-        <div className="cuestionario-header">
-          <div className="cuestionario-meta">
-            <span className="cuestionario-category">{currentQuestion.category}</span>
-            <Badge>Peso {currentQuestion.weight}</Badge>
+    <>
+      <Breadcrumbs />
+      <div className="cuestionario-layout">
+        <div className="cuestionario-main">
+          <div className="cuestionario-header">
+            <div className="cuestionario-meta">
+              <span className="cuestionario-category">{currentQuestion.category}</span>
+              <Badge>Peso {currentQuestion.weight}</Badge>
+            </div>
+            <div className="cuestionario-header-right">
+              <span className="cuestionario-time"><FiClock size={14} /> ~{estimatedMinutes} min restantes</span>
+              <span className="cuestionario-counter">Pregunta {currentIdx + 1} de {questions.length}</span>
+            </div>
           </div>
-          <span className="cuestionario-counter">Pregunta {currentQuestion.number} de {currentQuestion.total}</span>
-        </div>
 
-        <ProgressBar
-          value={currentQuestion.number}
-          max={currentQuestion.total}
-          height="md"
-          showValue
-        />
-
-        <div className="cuestionario-question">
-          <p className="cuestionario-text">{currentQuestion.text}</p>
-        </div>
-
-        <div className="cuestionario-options">
-          {['Sí', 'No', 'Parcialmente', 'No aplica'].map((opt) => (
-            <label key={opt} className="cuestionario-option">
-              <input
-                type="radio"
-                name="respuesta"
-                className="cuestionario-radio"
-                checked={selectedOption === opt}
-                onChange={() => setSelectedOption(opt)}
+          <div className="cuestionario-progress-dots">
+            {questions.map((_, i) => (
+              <div
+                key={i}
+                className={`cuestionario-dot ${i === currentIdx ? 'cuestionario-dot--active' : ''} ${answers[i] ? 'cuestionario-dot--answered' : ''}`}
+                onClick={() => { setCurrentIdx(i); setAiHelp(''); setAiMessages([]) }}
+                title={answers[i] ? `Respondida: ${answers[i]}` : `Pregunta ${i + 1}`}
               />
-              <span className="cuestionario-radio-label">{opt}</span>
-            </label>
-          ))}
-        </div>
-
-        <div className="cuestionario-actions">
-          <button className="btn btn-secondary" onClick={handlePrev} disabled={currentIdx === 0}>
-            <FiArrowLeft size={16} /> Anterior
-          </button>
-          <div className="cuestionario-actions-right">
-            <button className="btn btn-ghost">
-              <FiSave size={16} /> Guardar borrador
-            </button>
-            <button className="btn btn-primary" onClick={handleNext} disabled={currentIdx === questions.length - 1}>
-              Siguiente <FiArrowRight size={16} />
-            </button>
+            ))}
           </div>
-        </div>
-      </div>
 
-      <aside className="cuestionario-help">
-        <div className="cuestionario-help-header">
-          <FiCpu size={18} />
-          Ayuda de IA
-        </div>
+          <ProgressBar
+            value={answeredCount}
+            max={questions.length}
+            height="md"
+            showValue
+          />
 
-        <div className="cuestionario-help-content">
-          {!aiHelp && aiMessages.length === 0 ? (
-            <div className="cuestionario-help-text">
-              <p>{currentQuestion.help}</p>
-              <button
-                className="cuestionario-help-btn"
-                onClick={handleAiHelp}
-                disabled={aiLoading}
+          <div className="cuestionario-question">
+            <p className="cuestionario-text">{currentQuestion.text}</p>
+          </div>
+
+          <div className="cuestionario-options">
+            {optionKeys.map((opt, i) => (
+              <label
+                key={opt}
+                className={`cuestionario-option ${selectedOption === opt ? 'cuestionario-option--selected' : ''}`}
               >
-                {aiLoading ? <FiLoader size={14} className="spin" /> : <FiCpu size={14} />}
-                Obtener explicación de IA
+                <input
+                  type="radio"
+                  name="respuesta"
+                  className="cuestionario-radio"
+                  checked={selectedOption === opt}
+                  onChange={() => handleSelectOption(opt)}
+                />
+                <span className="cuestionario-option-key">{i + 1}</span>
+                <span className="cuestionario-radio-label">{opt}</span>
+                {selectedOption === opt && <FiCheck size={16} className="cuestionario-check" />}
+              </label>
+            ))}
+          </div>
+
+          <div className="cuestionario-actions">
+            <button className="btn btn-secondary" onClick={handlePrev} disabled={currentIdx === 0}>
+              <FiArrowLeft size={16} /> Anterior
+            </button>
+            <div className="cuestionario-actions-right">
+              <button className="btn btn-ghost">
+                <FiSave size={16} /> Guardar borrador
+              </button>
+              <button className="btn btn-primary" onClick={handleNext} disabled={currentIdx === questions.length - 1}>
+                Siguiente <FiArrowRight size={16} />
               </button>
             </div>
-          ) : (
-            <div className="cuestionario-ai-chat">
-              {aiHelp && (
-                <div className="cuestionario-ai-msg cuestionario-ai-msg--ai">
-                  <div className="cuestionario-ai-avatar">
-                    <FiCpu size={12} />
-                  </div>
-                  <div className="cuestionario-ai-bubble">{aiHelp}</div>
-                </div>
-              )}
-              {aiMessages.map((msg, i) => (
-                <div key={i} className={`cuestionario-ai-msg cuestionario-ai-msg--${msg.role === 'user' ? 'user' : 'ai'}`}>
-                  {msg.role === 'assistant' && (
+          </div>
+        </div>
+
+        <aside className="cuestionario-help">
+          <div className="cuestionario-help-header">
+            <FiCpu size={18} />
+            Ayuda de IA
+          </div>
+
+          <div className="cuestionario-help-content">
+            {!aiHelp && aiMessages.length === 0 ? (
+              <div className="cuestionario-help-text">
+                <p>{currentQuestion.help}</p>
+                <button
+                  className="cuestionario-help-btn"
+                  onClick={handleAiHelp}
+                  disabled={aiLoading}
+                >
+                  {aiLoading ? <FiLoader size={14} className="spin" /> : <FiCpu size={14} />}
+                  Obtener explicación de IA
+                </button>
+              </div>
+            ) : (
+              <div className="cuestionario-ai-chat">
+                {aiHelp && (
+                  <div className="cuestionario-ai-msg cuestionario-ai-msg--ai">
                     <div className="cuestionario-ai-avatar">
                       <FiCpu size={12} />
                     </div>
-                  )}
-                  <div className={`cuestionario-ai-bubble ${msg.isError ? 'cuestionario-ai-bubble--error' : ''}`}>
-                    {msg.content}
+                    <div className="cuestionario-ai-bubble">{aiHelp}</div>
                   </div>
-                </div>
-              ))}
-              {aiLoading && (
-                <div className="cuestionario-ai-msg cuestionario-ai-msg--ai">
-                  <div className="cuestionario-ai-avatar">
-                    <FiCpu size={12} />
+                )}
+                {aiMessages.map((msg, i) => (
+                  <div key={i} className={`cuestionario-ai-msg cuestionario-ai-msg--${msg.role === 'user' ? 'user' : 'ai'}`}>
+                    {msg.role === 'assistant' && (
+                      <div className="cuestionario-ai-avatar">
+                        <FiCpu size={12} />
+                      </div>
+                    )}
+                    <div className={`cuestionario-ai-bubble ${msg.isError ? 'cuestionario-ai-bubble--error' : ''}`}>
+                      {msg.content}
+                    </div>
                   </div>
-                  <div className="cuestionario-ai-bubble cuestionario-ai-bubble--loading">
-                    <div className="chat-typing"><span></span><span></span><span></span></div>
+                ))}
+                {aiLoading && (
+                  <div className="cuestionario-ai-msg cuestionario-ai-msg--ai">
+                    <div className="cuestionario-ai-avatar">
+                      <FiCpu size={12} />
+                    </div>
+                    <div className="cuestionario-ai-bubble cuestionario-ai-bubble--loading">
+                      <div className="chat-typing"><span></span><span></span><span></span></div>
+                    </div>
                   </div>
-                </div>
-              )}
-              <div ref={messagesEndRef} />
-            </div>
-          )}
-        </div>
+                )}
+                <div ref={messagesEndRef} />
+              </div>
+            )}
+          </div>
 
-        <div className="cuestionario-help-input">
-          <input
-            type="text"
-            placeholder="Pregunta sobre esta pregunta..."
-            value={aiInput}
-            onChange={(e) => setAiInput(e.target.value)}
-            onKeyPress={handleAiKeyPress}
-            disabled={aiLoading}
-          />
-          <button onClick={() => handleAiSend()} disabled={aiLoading || !aiInput.trim()}>
-            {aiLoading ? <FiLoader size={14} className="spin" /> : <FiSend size={14} />}
-          </button>
-        </div>
+          <div className="cuestionario-help-input">
+            <input
+              type="text"
+              placeholder="Pregunta sobre esta pregunta..."
+              value={aiInput}
+              onChange={(e) => setAiInput(e.target.value)}
+              onKeyDown={handleAiKeyPress}
+              disabled={aiLoading}
+            />
+            <button onClick={() => handleAiSend()} disabled={aiLoading || !aiInput.trim()}>
+              {aiLoading ? <FiLoader size={14} className="spin" /> : <FiSend size={14} />}
+            </button>
+          </div>
 
-        <div className="cuestionario-help-footer">
-          <Badge variant="accent">Sugerencia IA</Badge>
-        </div>
-      </aside>
-    </div>
+          <div className="cuestionario-help-footer">
+            <Badge variant="accent">Atajos: ← → navegar, 1-4 responder</Badge>
+          </div>
+        </aside>
+      </div>
+    </>
   )
 }
 

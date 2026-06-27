@@ -3,6 +3,11 @@
   border: 1px solid var(--color-border);
   border-radius: var(--radius-lg);
   padding: 24px;
+  transition: border-color 0.2s ease;
+}
+
+.section-card:hover {
+  border-color: var(--color-border-hover);
 }
 
 .section-card-header {

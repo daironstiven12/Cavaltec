@@ -11,8 +11,51 @@
   justify-content: center;
 }
 
-.gauge-wrapper {
-  padding: 8px 0;
+.gauge-recharts {
+  position: relative;
+  width: 100%;
+  max-width: 220px;
+  margin: 0 auto;
+}
+
+.gauge-recharts-center {
+  position: absolute;
+  top: 55%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.gauge-recharts-value {
+  font-size: 32px;
+  font-weight: 700;
+  color: var(--color-text-primary);
+  letter-spacing: -1px;
+}
+
+.gauge-recharts-label {
+  font-size: 12px;
+  color: var(--color-text-tertiary);
+}
+
+.resultados-chart-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+  align-items: start;
+}
+
+.resultados-bar-chart {
+  min-height: 240px;
+}
+
+.resultados-category-details {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
 }
 
 .resultados-metrics {
@@ -330,8 +373,8 @@
     grid-template-columns: 1fr;
   }
 
-  .resultados-category-grid {
-    grid-template-columns: repeat(2, 1fr);
+  .resultados-chart-row {
+    grid-template-columns: 1fr;
   }
 }
 

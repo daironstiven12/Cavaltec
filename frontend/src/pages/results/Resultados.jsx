@@ -1,13 +1,15 @@
 import { FiDownload, FiCheckCircle, FiAlertTriangle, FiThumbsUp, FiTarget, FiArrowRight, FiFileText, FiTrendingUp, FiInfo } from 'react-icons/fi'
+import { PieChart, Pie, Cell, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, RadialBarChart, RadialBar } from 'recharts'
 import PageHeader from '../../components/common/PageHeader'
 import GaugeCard from '../../components/common/GaugeCard'
 import SectionCard from '../../components/common/SectionCard'
 import Badge from '../../components/common/Badge'
 import Button from '../../components/common/Button'
+import Breadcrumbs from '../../components/common/Breadcrumbs'
 import './Resultados.css'
 
 const brechas = [
-  { area: 'Política de Datos', severity: 'Media', desc: 'La política de privacidad no incluye todos los derechos ARBO exigidos por la normativa vigente.' },
+  { area: 'Política de Datos', severity: 'Media', desc: 'La política de privacidad no incluye todos los derechos ARCO exigidos por la normativa vigente.' },
   { area: 'Privacidad desde el Diseño', severity: 'Alta', desc: 'No se implementan controles de privacidad en la fase de diseño de nuevos productos o servicios.' },
   { area: 'Gobernanza', severity: 'Alta', desc: 'No existe un comité de privacidad formal ni reuniones periódicas de seguimiento.' },
 ]
@@ -21,7 +23,7 @@ const fortalezas = [
 const recomendaciones = [
   'Establecer un comité de privacidad con reuniones mensuales y reportes directos a la dirección.',
   'Implementar controles de privacidad en el ciclo de vida de desarrollo de productos (PbD).',
-  'Actualizar la política de privacidad para incluir todos los derechos ARBO y el procedimiento para ejercerlos.',
+  'Actualizar la política de privacidad para incluir todos los derechos ARCO y el procedimiento para ejercerlos.',
   'Realizar una auditoría externa de cumplimiento antes del próximo ciclo de evaluación.',
 ]
 
@@ -32,9 +34,28 @@ const categoryScores = [
   { label: 'Seguridad', value: 85, trend: '+2%' },
 ]
 
+const COLORS = ['#2563eb', '#10b981', '#f59e0b', '#8b5cf6']
+
+const gaugeData = [
+  { name: 'Cumplimiento', value: 76, fill: '#2563eb' },
+]
+
+const ResultadosTooltip = ({ active, payload }) => {
+  if (active && payload && payload.length) {
+    return (
+      <div className="chart-tooltip">
+        <p className="chart-tooltip-label">{payload[0].payload.label}</p>
+        <p className="chart-tooltip-value">{payload[0].value}%</p>
+      </div>
+    )
+  }
+  return null
+}
+
 function Resultados() {
   return (
     <>
+      <Breadcrumbs />
       <PageHeader
         title="Resultados de evaluación"
         subtitle="TechCorp S.A.S. · Evaluación v2.4.1 · 15 de junio, 2026"
@@ -52,9 +73,9 @@ function Resultados() {
             <span>Resumen ejecutivo</span>
           </div>
           <p className="resultados-exec-text">
-            TechCorp S.A.S. ha completado la evaluación de cumplimiento v2.4.1 con un puntaje general del <strong>76%</strong>, 
-            lo que representa una mejora del <strong>8%</strong> respecto a la evaluación anterior. La categoría de Seguridad 
-            (85%) es la más fuerte, mientras que Gobernanza (68%) requiere atención prioritaria. Se identificaron 
+            TechCorp S.A.S. ha completado la evaluación de cumplimiento v2.4.1 con un puntaje general del <strong>76%</strong>,
+            lo que representa una mejora del <strong>8%</strong> respecto a la evaluación anterior. La categoría de Seguridad
+            (85%) es la más fuerte, mientras que Gobernanza (68%) requiere atención prioritaria. Se identificaron
             <strong> 3 brechas</strong> y <strong>3 fortalezas</strong>, con <strong>4 recomendaciones</strong> para el plan de acción.
           </p>
         </SectionCard>
@@ -62,8 +83,29 @@ function Resultados() {
 
       <div className="resultados-summary">
         <SectionCard className="resultados-gauge">
-          <div className="gauge-wrapper">
-            <GaugeCard value={76} label="Cumplimiento general" size="lg" subtitle="Nivel" />
+          <div className="gauge-recharts">
+            <ResponsiveContainer width="100%" height={220}>
+              <RadialBarChart
+                cx="50%"
+                cy="50%"
+                innerRadius="60%"
+                outerRadius="90%"
+                barSize={18}
+                data={gaugeData}
+                startAngle={180}
+                endAngle={0}
+              >
+                <RadialBar
+                  dataKey="value"
+                  cornerRadius={10}
+                  background={{ fill: 'var(--color-bg-tertiary)' }}
+                />
+              </RadialBarChart>
+            </ResponsiveContainer>
+            <div className="gauge-recharts-center">
+              <span className="gauge-recharts-value">76%</span>
+              <span className="gauge-recharts-label">Cumplimiento</span>
+            </div>
           </div>
         </SectionCard>
 
@@ -117,19 +159,35 @@ function Resultados() {
 
       <div className="resultados-trends">
         <SectionCard title="Puntaje por categoría">
-          <div className="resultados-category-grid">
-            {categoryScores.map((c, i) => (
-              <div key={i} className="resultados-category-item">
-                <div className="resultados-category-header">
-                  <span className="resultados-category-label">{c.label}</span>
-                  <span className="resultados-category-trend" style={{ color: c.trend.startsWith('+') ? 'var(--color-success)' : 'var(--color-error)' }}>{c.trend}</span>
+          <div className="resultados-chart-row">
+            <div className="resultados-bar-chart">
+              <ResponsiveContainer width="100%" height={240}>
+                <BarChart data={categoryScores} margin={{ top: 10, right: 10, left: -10, bottom: 0 }} layout="vertical">
+                  <CartesianGrid strokeDasharray="3 3" stroke="var(--color-border-light)" horizontal={false} />
+                  <XAxis type="number" domain={[0, 100]} tick={{ fontSize: 12, fill: 'var(--color-text-tertiary)' }} axisLine={false} tickLine={false} />
+                  <YAxis type="category" dataKey="label" tick={{ fontSize: 12, fill: 'var(--color-text-secondary)' }} axisLine={false} tickLine={false} width={140} />
+                  <Tooltip content={<ResultadosTooltip />} />
+                  <Bar dataKey="value" radius={[0, 6, 6, 0]} barSize={20}>
+                    {categoryScores.map((entry, index) => (
+                      <Cell key={index} fill={COLORS[index % COLORS.length]} />
+                    ))}
+                  </Bar>
+                </BarChart>
+              </ResponsiveContainer>
+            </div>
+            <div className="resultados-category-details">
+              {categoryScores.map((c, i) => (
+                <div key={i} className="resultados-category-item">
+                  <div className="resultados-category-header">
+                    <span className="resultados-category-label">{c.label}</span>
+                    <span className="resultados-category-trend" style={{ color: c.trend.startsWith('+') ? 'var(--color-success)' : 'var(--color-error)' }}>{c.trend}</span>
+                  </div>
+                  <div className="resultados-category-track">
+                    <div className="resultados-category-fill" style={{ width: `${c.value}%`, background: COLORS[i] }} />
+                  </div>
                 </div>
-                <div className="resultados-category-value">{c.value}%</div>
-                <div className="resultados-category-track">
-                  <div className="resultados-category-fill" style={{ width: `${c.value}%`, background: c.value >= 75 ? 'var(--color-success)' : c.value >= 60 ? 'var(--color-warning)' : 'var(--color-error)' }} />
-                </div>
-              </div>
-            ))}
+              ))}
+            </div>
           </div>
         </SectionCard>
       </div>

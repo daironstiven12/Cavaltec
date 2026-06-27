@@ -1,15 +1,30 @@
+import { useState, useEffect } from 'react'
 import { FiFileText, FiTrendingUp, FiUsers, FiAlertTriangle, FiClock, FiCheckCircle, FiBarChart2 } from 'react-icons/fi'
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, LineChart, Line, AreaChart, Area } from 'recharts'
 import StatCard from '../../components/common/StatCard'
 import GaugeCard from '../../components/common/GaugeCard'
 import SectionCard from '../../components/common/SectionCard'
 import Badge from '../../components/common/Badge'
+import Breadcrumbs from '../../components/common/Breadcrumbs'
+import { dashboardAPI } from '../../services/api'
 import './Dashboard.css'
 
-const stats = [
-  { icon: <FiFileText size={22} />, value: '128', label: 'Evaluaciones realizadas', trend: 12 },
-  { icon: <FiTrendingUp size={22} />, value: '76%', label: 'Cumplimiento promedio', trend: 8, color: 'var(--color-success)' },
-  { icon: <FiUsers size={22} />, value: '24', label: 'Empresas registradas', trend: 3, color: 'var(--color-accent)' },
-  { icon: <FiAlertTriangle size={22} />, value: '43', label: 'Brechas detectadas', trend: -5, color: 'var(--color-error)' },
+const complianceTrend = [
+  { month: 'Ene', value: 62 },
+  { month: 'Feb', value: 65 },
+  { month: 'Mar', value: 68 },
+  { month: 'Abr', value: 71 },
+  { month: 'May', value: 73 },
+  { month: 'Jun', value: 76 },
+  { month: 'Jul', value: 79 },
+]
+
+const evaluationsByCompany = [
+  { company: 'TechCorp', count: 15, change: '+3' },
+  { company: 'CloudSecure', count: 12, change: '+2' },
+  { company: 'GreenData', count: 10, change: '+1' },
+  { company: 'DataSmart', count: 8, change: '+2' },
+  { company: 'InnovaTech', count: 4, change: '0' },
 ]
 
 const recentActivity = [
@@ -34,21 +49,73 @@ const pendingTasks = [
   { task: 'Auditar cumplimiento de GreenData', due: 'En 5 días', priority: 'Baja' },
 ]
 
-const evaluationsByCompany = [
-  { company: 'TechCorp', count: 15, change: '+3' },
-  { company: 'CloudSecure', count: 12, change: '+2' },
-  { company: 'GreenData', count: 10, change: '+1' },
-  { company: 'DataSmart', count: 8, change: '+2' },
-  { company: 'InnovaTech', count: 4, change: '0' },
-]
+const CustomTooltip = ({ active, payload, label }) => {
+  if (active && payload && payload.length) {
+    return (
+      <div className="chart-tooltip">
+        <p className="chart-tooltip-label">{label}</p>
+        <p className="chart-tooltip-value">{payload[0].value}%</p>
+      </div>
+    )
+  }
+  return null
+}
 
 function Dashboard() {
+  const [stats, setStats] = useState(null)
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    const fetchStats = async () => {
+      try {
+        const response = await dashboardAPI.getAdminStats()
+        setStats(response.data)
+      } catch {
+        // Use fallback data
+      } finally {
+        setLoading(false)
+      }
+    }
+    fetchStats()
+  }, [])
+
+  const statCards = [
+    { icon: <FiFileText size={22} />, value: stats?.total_evaluations || '128', label: 'Evaluaciones realizadas', trend: 12 },
+    { icon: <FiTrendingUp size={22} />, value: `${stats?.average_compliance || 76}%`, label: 'Cumplimiento promedio', trend: 8, color: 'var(--color-success)' },
+    { icon: <FiUsers size={22} />, value: stats?.total_companies || '24', label: 'Empresas registradas', trend: 3, color: 'var(--color-accent)' },
+    { icon: <FiAlertTriangle size={22} />, value: stats?.total_breaches || '43', label: 'Brechas detectadas', trend: -5, color: 'var(--color-error)' },
+  ]
+
   return (
     <>
+      <Breadcrumbs />
+
       <div className="dashboard-stats">
-        {stats.map((s, i) => (
+        {statCards.map((s, i) => (
           <StatCard key={i} icon={s.icon} value={s.value} label={s.label} trend={s.trend} color={s.color} />
         ))}
+      </div>
+
+      <div className="dashboard-chart-section">
+        <SectionCard title="Evolución del cumplimiento">
+          <div className="dashboard-chart-container">
+            <ResponsiveContainer width="100%" height={260}>
+              <AreaChart data={complianceTrend} margin={{ top: 10, right: 10, left: -10, bottom: 0 }}>
+                <defs>
+                  <linearGradient id="colorCompliance" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="5%" stopColor="var(--color-accent)" stopOpacity={0.15}/>
+                    <stop offset="95%" stopColor="var(--color-accent)" stopOpacity={0}/>
+                  </linearGradient>
+                </defs>
+                <CartesianGrid strokeDasharray="3 3" stroke="var(--color-border-light)" />
+                <XAxis dataKey="month" tick={{ fontSize: 12, fill: 'var(--color-text-tertiary)' }} axisLine={false} tickLine={false} />
+                <YAxis tick={{ fontSize: 12, fill: 'var(--color-text-tertiary)' }} axisLine={false} tickLine={false} domain={[50, 100]} />
+                <Tooltip content={<CustomTooltip />} />
+                <Area type="monotone" dataKey="value" stroke="var(--color-accent)" strokeWidth={2.5} fill="url(#colorCompliance)" dot={{ r: 4, fill: 'var(--color-accent)', strokeWidth: 2, stroke: 'var(--color-bg)' }} />
+              </AreaChart>
+            </ResponsiveContainer>
+          </div>
+        </SectionCard>
       </div>
 
       <div className="dashboard-widgets">
@@ -95,7 +162,7 @@ function Dashboard() {
       <div className="dashboard-grid">
         <SectionCard title="Cumplimiento general" className="dashboard-compliance">
           <div className="compliance-content">
-            <GaugeCard value={76} label="Nivel de cumplimiento general" size="lg" />
+            <GaugeCard value={stats?.average_compliance || 76} label="Nivel de cumplimiento general" size="lg" subtitle="General" />
             <div className="compliance-breakdown">
               <h4 className="compliance-breakdown-title">Por categoría</h4>
               {[

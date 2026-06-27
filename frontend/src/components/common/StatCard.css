@@ -3,12 +3,14 @@
   border: 1px solid var(--color-border);
   border-radius: var(--radius-lg);
   padding: 24px;
-  transition: all 0.2s;
+  transition: all var(--transition-base);
+  cursor: default;
 }
 
 .stat-card:hover {
   box-shadow: var(--shadow-md);
   border-color: var(--color-border-hover);
+  transform: translateY(-2px);
 }
 
 .stat-card-header {
@@ -28,6 +30,16 @@
   color: var(--color-accent);
   background: var(--color-accent-subtle);
   font-size: 20px;
+  transition: transform var(--transition-bounce);
+}
+
+.stat-card:hover .stat-card-icon {
+  transform: scale(1.1);
+}
+
+.stat-card-icon--custom {
+  background: var(--stat-bg, var(--color-accent-subtle));
+  color: var(--stat-color, var(--color-accent));
 }
 
 .stat-card-trend {
@@ -38,12 +50,12 @@
 }
 
 .stat-card-trend--up {
-  background: #ecfdf5;
+  background: var(--color-success-light);
   color: var(--color-success);
 }
 
 .stat-card-trend--down {
-  background: #fef2f2;
+  background: var(--color-error-light);
   color: var(--color-error);
 }
 

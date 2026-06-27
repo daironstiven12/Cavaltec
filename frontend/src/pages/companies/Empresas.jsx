@@ -1,55 +1,51 @@
 import { FiPlus, FiEdit2, FiMail, FiMapPin, FiUsers, FiGrid, FiList, FiEye } from 'react-icons/fi'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import PageHeader from '../../components/common/PageHeader'
 import DataTable from '../../components/common/DataTable'
 import Badge from '../../components/common/Badge'
 import Button from '../../components/common/Button'
+import SkeletonTable from '../../components/common/Skeleton'
+import Breadcrumbs from '../../components/common/Breadcrumbs'
+import { companiesAPI } from '../../services/api'
 import './Empresas.css'
 
-const companies = [
-  { name: 'TechCorp S.A.S.', nit: '901.123.456-7', email: 'contacto@techcorp.com', city: 'Bogotá', employees: 120, status: 'Activa', evaluations: 15, compliance: 82 },
-  { name: 'DataSmart Ltda.', nit: '901.234.567-8', email: 'info@datasmart.co', city: 'Medellín', employees: 45, status: 'Activa', evaluations: 8, compliance: 68 },
-  { name: 'CloudSecure S.A.', nit: '901.345.678-9', email: 'ventas@cloudsecure.com', city: 'Cali', employees: 78, status: 'Activa', evaluations: 12, compliance: 77 },
-  { name: 'InnovaTech S.A.S.', nit: '901.456.789-0', email: 'hola@innovatech.co', city: 'Barranquilla', employees: 32, status: 'Inactiva', evaluations: 4, compliance: 54 },
-  { name: 'GreenData Corp.', nit: '901.567.890-1', email: 'info@greendata.com', city: 'Bogotá', employees: 56, status: 'Activa', evaluations: 10, compliance: 71 },
+const fallbackCompanies = [
+  { business_name: 'TechCorp S.A.S.', nit: '901.123.456-7', email: 'contacto@techcorp.com', city: 'Bogotá', status: 'Activa' },
+  { business_name: 'DataSmart Ltda.', nit: '901.234.567-8', email: 'info@datasmart.co', city: 'Medellín', status: 'Activa' },
+  { business_name: 'CloudSecure S.A.', nit: '901.345.678-9', email: 'ventas@cloudsecure.com', city: 'Cali', status: 'Activa' },
+  { business_name: 'InnovaTech S.A.S.', nit: '901.456.789-0', email: 'hola@innovatech.co', city: 'Barranquilla', status: 'Inactiva' },
+  { business_name: 'GreenData Corp.', nit: '901.567.890-1', email: 'info@greendata.com', city: 'Bogotá', status: 'Activa' },
 ]
 
 const columns = [
   {
     label: 'Empresa',
-    key: 'name',
+    key: 'business_name',
     render: (row) => (
       <div className="company-cell">
-        <div className="company-cell-avatar">{row.name.charAt(0)}</div>
+        <div className="company-cell-avatar">{(row.business_name || 'E').charAt(0)}</div>
         <div>
-          <div className="company-cell-name">{row.name}</div>
-          <div className="company-cell-nit">NIT {row.nit}</div>
+          <div className="company-cell-name">{row.business_name}</div>
+          <div className="company-cell-nit">NIT {row.nit || '—'}</div>
         </div>
       </div>
     ),
   },
-  { label: 'Ciudad', key: 'city', width: '120px' },
-  { label: 'Colaboradores', key: 'employees', width: '110px' },
-  { label: 'Evaluaciones', key: 'evaluations', width: '110px' },
-  {
-    label: 'Cumplimiento',
-    key: 'compliance',
-    width: '120px',
-    render: (row) => (
-      <div className="compliance-cell">
-        <div className="compliance-bar">
-          <div className="compliance-bar-fill" style={{ width: `${row.compliance}%`, background: row.compliance >= 70 ? 'var(--color-success)' : row.compliance >= 55 ? 'var(--color-warning)' : 'var(--color-error)' }} />
-        </div>
-        <span>{row.compliance}%</span>
-      </div>
-    ),
-  },
+  { label: 'Ciudad', key: 'city', width: '120px', render: (row) => row.city || '—' },
   {
     label: 'Estado',
     key: 'status',
     width: '100px',
     render: (row) => (
-      <Badge variant={row.status === 'Activa' ? 'success' : 'default'}>{row.status}</Badge>
+      <Badge variant={row.status === 'Activa' ? 'success' : 'default'}>{row.status || 'Activa'}</Badge>
+    ),
+  },
+  {
+    label: 'Email',
+    key: 'email',
+    width: '180px',
+    render: (row) => (
+      <span className="empresa-email-cell"><FiMail size={13} /> {row.email}</span>
     ),
   },
 ]
@@ -66,9 +62,29 @@ const quickFilters = [
 
 function Empresas() {
   const [viewMode, setViewMode] = useState('table')
+  const [companies, setCompanies] = useState([])
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    const fetchCompanies = async () => {
+      try {
+        const res = await companiesAPI.getAll()
+        const data = res.data?.items || res.data || []
+        setCompanies(data.length > 0 ? data : fallbackCompanies)
+      } catch {
+        setCompanies(fallbackCompanies)
+      } finally {
+        setLoading(false)
+      }
+    }
+    fetchCompanies()
+  }, [])
+
+  const activeCount = companies.filter((c) => c.status === 'Activa').length
 
   return (
     <>
+      <Breadcrumbs />
       <PageHeader
         title="Empresas"
         subtitle="Gestión de empresas registradas en la plataforma"
@@ -81,20 +97,12 @@ function Empresas() {
 
       <div className="empresas-summary">
         <div className="empresa-summary-card">
-          <span className="empresa-summary-value">5</span>
+          <span className="empresa-summary-value">{companies.length}</span>
           <span className="empresa-summary-label">Empresas registradas</span>
         </div>
         <div className="empresa-summary-card">
-          <span className="empresa-summary-value" style={{ color: 'var(--color-success)' }}>4</span>
+          <span className="empresa-summary-value" style={{ color: 'var(--color-success)' }}>{activeCount}</span>
           <span className="empresa-summary-label">Empresas activas</span>
-        </div>
-        <div className="empresa-summary-card">
-          <span className="empresa-summary-value" style={{ color: 'var(--color-accent)' }}>331</span>
-          <span className="empresa-summary-label">Total colaboradores</span>
-        </div>
-        <div className="empresa-summary-card">
-          <span className="empresa-summary-value" style={{ color: 'var(--color-warning)' }}>72%</span>
-          <span className="empresa-summary-label">Cumplimiento promedio</span>
         </div>
       </div>
 
@@ -107,32 +115,23 @@ function Empresas() {
         </button>
       </div>
 
-      {viewMode === 'cards' ? (
+      {loading ? (
+        <SkeletonTable rows={5} cols={4} />
+      ) : viewMode === 'cards' ? (
         <div className="empresas-cards">
           {companies.map((c, i) => (
-            <div key={i} className="empresa-card">
+            <div key={c.id || i} className="empresa-card">
               <div className="empresa-card-header">
-                <div className="empresa-card-avatar">{c.name.charAt(0)}</div>
-                <Badge variant={c.status === 'Activa' ? 'success' : 'default'}>{c.status}</Badge>
+                <div className="empresa-card-avatar">{(c.business_name || 'E').charAt(0)}</div>
+                <Badge variant={c.status === 'Activa' ? 'success' : 'default'}>{c.status || 'Activa'}</Badge>
               </div>
-              <h3 className="empresa-card-name">{c.name}</h3>
-              <p className="empresa-card-nit">NIT {c.nit}</p>
+              <h3 className="empresa-card-name">{c.business_name}</h3>
+              <p className="empresa-card-nit">NIT {c.nit || '—'}</p>
               <div className="empresa-card-meta">
-                <span><FiMapPin size={14} /> {c.city}</span>
-                <span><FiUsers size={14} /> {c.employees}</span>
+                <span><FiMapPin size={14} /> {c.city || '—'}</span>
               </div>
               <div className="empresa-card-email">
-                <FiMail size={14} /> {c.email}
-              </div>
-              <div className="empresa-card-compliance">
-                <span className="empresa-card-compliance-label">Cumplimiento</span>
-                <div className="compliance-bar">
-                  <div className="compliance-bar-fill" style={{ width: `${c.compliance}%`, background: c.compliance >= 70 ? 'var(--color-success)' : c.compliance >= 55 ? 'var(--color-warning)' : 'var(--color-error)' }} />
-                </div>
-                <span className="empresa-card-compliance-value">{c.compliance}%</span>
-              </div>
-              <div className="empresa-card-footer">
-                <span className="empresa-card-evals">{c.evaluations} evaluaciones</span>
+                <FiMail size={14} /> {c.email || '—'}
               </div>
             </div>
           ))}
