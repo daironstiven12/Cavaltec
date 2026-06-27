@@ -1,11 +1,11 @@
 import { Link } from 'react-router-dom'
 import './Logo.css'
 // 1. Importas la imagen dándole un nombre
-import logoBlanco from '../../assets/logo_blanco.png' 
+import logoBlanco from '../../assets/log_negro-s.png' 
 
 function Logo({ showText = true, size = 'md' }) {
-  const iconSize = size === 'lg' ? 36 : 32
-  const fontSize = size === 'lg' ? 22 : 20
+  const iconSize = size === 'lg' ? 3 : 3
+  const fontSize = size === 'lg' ? 2 : 2
 
   return (
     <Link to="/" className="logo">

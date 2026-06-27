@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import './Input.css'
 
-function Input({ label, id, type = 'text', error, placeholder, showToggle, ...props }) {
+function Input({ label, id, type = 'text', error, placeholder, showToggle, value, onChange, ...props }) {
   const [showPassword, setShowPassword] = useState(false)
   const isPassword = type === 'password'
   const inputType = isPassword && showPassword ? 'text' : type
@@ -11,6 +11,7 @@ function Input({ label, id, type = 'text', error, placeholder, showToggle, ...pr
       {label && (
         <label className="form-label" htmlFor={id}>
           {label}
+          {props.required && <span className="form-required">*</span>}
         </label>
       )}
       <div className={showToggle || isPassword ? 'form-input-wrapper' : ''}>
@@ -19,6 +20,8 @@ function Input({ label, id, type = 'text', error, placeholder, showToggle, ...pr
           className={`form-input ${error ? 'error' : ''}`}
           type={inputType}
           placeholder={placeholder}
+          value={value}
+          onChange={onChange}
           {...props}
         />
         {(showToggle || isPassword) && (

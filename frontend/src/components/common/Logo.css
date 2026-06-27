@@ -21,4 +21,10 @@
 
 .logo-text {
   letter-spacing: -0.5px;
+
+}
+.logo-text img {
+  height: 70px;      /* Tamaño estándar ideal para un Navbar moderno */
+  width: auto;       /* Mantiene la proporción original del logo sin deformarlo */
+  display: block;    /* Elimina un pequeño espacio en blanco que los navegadores dejan abajo por defecto */
 }

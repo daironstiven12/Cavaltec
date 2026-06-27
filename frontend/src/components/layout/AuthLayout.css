@@ -1,3 +1,7 @@
+/* ============================================
+   AUTH LAYOUT - DISEÑO PROFESIONAL
+   ============================================ */
+
 .auth-page {
   min-height: 100vh;
   display: flex;
@@ -5,11 +9,37 @@
   justify-content: center;
   padding: 24px;
   background: var(--color-bg-secondary);
+  position: relative;
+  overflow: hidden;
+}
+
+.auth-page::before {
+  content: '';
+  position: absolute;
+  top: -30%;
+  right: -20%;
+  width: 600px;
+  height: 600px;
+  background: radial-gradient(ellipse at center, rgba(79, 70, 229, 0.04) 0%, transparent 70%);
+  pointer-events: none;
+}
+
+.auth-page::after {
+  content: '';
+  position: absolute;
+  bottom: -30%;
+  left: -20%;
+  width: 600px;
+  height: 600px;
+  background: radial-gradient(ellipse at center, rgba(79, 70, 229, 0.03) 0%, transparent 70%);
+  pointer-events: none;
 }
 
 .auth-container {
   width: 100%;
-  max-width: 440px;
+  max-width: 480px;
+  position: relative;
+  z-index: 1;
 }
 
 .auth-header {
@@ -24,15 +54,20 @@
   font-size: 22px;
   font-weight: 700;
   color: var(--color-text-primary);
-  margin-bottom: 24px;
+  margin-bottom: 28px;
   letter-spacing: -0.5px;
   text-decoration: none;
+  transition: transform 0.3s ease;
+}
+
+.auth-logo:hover {
+  transform: scale(1.02);
 }
 
 .auth-logo-icon {
-  width: 36px;
-  height: 36px;
-  background: var(--color-accent);
+  width: 40px;
+  height: 40px;
+  background: linear-gradient(135deg, var(--color-accent), #818cf8);
   border-radius: var(--radius-md);
   display: flex;
   align-items: center;
@@ -40,10 +75,16 @@
   color: white;
   font-weight: 700;
   font-size: 18px;
+  box-shadow: 0 4px 12px rgba(79, 70, 229, 0.25);
+  transition: box-shadow 0.3s ease;
+}
+
+.auth-logo:hover .auth-logo-icon {
+  box-shadow: 0 6px 20px rgba(79, 70, 229, 0.35);
 }
 
 .auth-title {
-  font-size: 24px;
+  font-size: 26px;
   font-weight: 700;
   letter-spacing: -0.5px;
   margin-bottom: 6px;
@@ -55,11 +96,50 @@
   color: var(--color-text-secondary);
 }
 
+/* ---------- CARD ---------- */
+.card-auth {
+  padding: 32px 28px;
+  background: var(--color-bg);
+  border-radius: var(--radius-xl);
+  border: 1px solid var(--color-border-light);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.04);
+  transition: box-shadow 0.3s ease;
+}
+
+.card-auth:hover {
+  box-shadow: 0 12px 48px rgba(0, 0, 0, 0.06);
+}
+
+/* ---------- RESPONSIVE ---------- */
 @media (max-width: 768px) {
   .auth-page {
     padding: 16px;
     align-items: flex-start;
-    padding-top: 48px;
+    padding-top: 40px;
     background: var(--color-bg);
+  }
+
+  .auth-page::before,
+  .auth-page::after {
+    display: none;
+  }
+
+  .auth-container {
+    max-width: 100%;
+  }
+
+  .card-auth {
+    padding: 24px 20px;
+    border: none;
+    box-shadow: none;
+    background: transparent;
+  }
+
+  .auth-logo {
+    margin-bottom: 20px;
+  }
+
+  .auth-title {
+    font-size: 22px;
   }
 }

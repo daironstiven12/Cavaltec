@@ -1,3 +1,7 @@
+/* ============================================
+   BOTONES - DISEÑO PROFESIONAL
+   ============================================ */
+
 .btn {
   display: inline-flex;
   align-items: center;
@@ -8,12 +12,14 @@
   font-weight: 500;
   line-height: 1.4;
   border-radius: var(--radius-md);
-  transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+  transition: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
   white-space: nowrap;
   user-select: none;
   text-decoration: none;
   cursor: pointer;
   position: relative;
+  font-family: inherit;
+  border: none;
 }
 
 .btn:focus-visible {
@@ -26,16 +32,25 @@
 }
 
 .btn-primary {
-  background: var(--color-accent);
+  background: linear-gradient(135deg, var(--color-accent), #6366f1);
   color: var(--color-text-inverse);
-  border: none;
-  box-shadow: var(--shadow-sm);
+  box-shadow: 0 4px 16px rgba(79, 70, 229, 0.30);
 }
 
 .btn-primary:hover {
-  background: var(--color-accent-hover);
-  box-shadow: var(--shadow-md);
+  background: linear-gradient(135deg, var(--color-accent-hover), #4f46e5);
+  box-shadow: 0 6px 24px rgba(79, 70, 229, 0.40);
   transform: translateY(-2px);
+}
+
+.btn-primary:active {
+  transform: translateY(0) scale(0.96);
+}
+
+.btn-primary:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none !important;
 }
 
 .btn-secondary {
@@ -66,7 +81,6 @@
 .btn-ghost {
   background: transparent;
   color: var(--color-text-secondary);
-  border: none;
 }
 
 .btn-ghost:hover {
@@ -75,14 +89,32 @@
 }
 
 .btn-google {
-  background: var(--color-google);
-  color: var(--color-text-inverse);
-  border: 1px solid var(--color-google);
-  width: 100%;
+  background: white;
+  color: #1a1a1a;
+  border: 1.5px solid var(--color-border);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+  transition: all 0.25s ease;
 }
 
 .btn-google:hover {
-  background: var(--color-google-hover);
+  background: #f8f9fa;
+  border-color: var(--color-border-hover);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
+  transform: translateY(-2px);
+}
+
+.btn-google:active {
+  transform: translateY(0);
+}
+
+.btn-google:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none !important;
+}
+
+.btn-google svg {
+  flex-shrink: 0;
 }
 
 .btn-lg {

@@ -1,3 +1,7 @@
+/* ============================================
+   INPUT - DISEÑO PROFESIONAL
+   ============================================ */
+
 .form-group {
   margin-bottom: 20px;
   width: 100%;
@@ -11,17 +15,23 @@
   margin-bottom: 6px;
 }
 
+.form-required {
+  color: var(--color-error);
+  margin-left: 2px;
+}
+
 .form-input {
   width: 100%;
-  padding: 10px 14px;
+  padding: 11px 14px;
   font-size: 15px;
-  border: 1px solid var(--color-border);
+  border: 1.5px solid var(--color-border);
   border-radius: var(--radius-md);
   background: var(--color-bg);
   color: var(--color-text-primary);
-  transition: all 0.15s;
+  transition: all 0.2s ease;
   outline: none;
   box-sizing: border-box;
+  font-family: inherit;
 }
 
 .form-input::placeholder {
@@ -34,17 +44,24 @@
 
 .form-input:focus {
   border-color: var(--color-accent);
-  box-shadow: 0 0 0 3px var(--color-accent-subtle);
+  box-shadow: 0 0 0 4px var(--color-accent-subtle);
 }
 
 .form-input.error {
   border-color: var(--color-error);
 }
 
+.form-input.error:focus {
+  box-shadow: 0 0 0 4px rgba(239, 68, 68, 0.12);
+}
+
 .form-error {
   font-size: 13px;
   color: var(--color-error);
   margin-top: 4px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
 }
 
 .form-input-wrapper {
@@ -57,7 +74,7 @@
 
 .form-input-toggle {
   position: absolute;
-  right: 10px;
+  right: 8px;
   top: 50%;
   transform: translateY(-50%);
   width: 36px;
@@ -67,7 +84,7 @@
   justify-content: center;
   border-radius: var(--radius-sm);
   color: var(--color-text-tertiary);
-  transition: color 0.15s;
+  transition: all 0.2s ease;
   background: none;
   border: none;
   cursor: pointer;
@@ -78,14 +95,20 @@
   background: var(--color-bg-tertiary);
 }
 
+.form-input-toggle:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+}
+
 .form-input-toggle-icon {
   width: 20px;
   height: 20px;
 }
 
+/* ---------- CHECKBOX ---------- */
 .form-checkbox {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   gap: 10px;
   cursor: pointer;
   font-size: 14px;
@@ -99,17 +122,25 @@
   border-radius: 4px;
   cursor: pointer;
   flex-shrink: 0;
+  margin-top: 1px;
+  transition: transform 0.2s ease;
+}
+
+.form-checkbox input[type="checkbox"]:hover {
+  transform: scale(1.05);
 }
 
 .form-checkbox a {
   color: var(--color-accent);
-  text-decoration: underline;
+  text-decoration: none;
+  font-weight: 500;
 }
 
 .form-checkbox a:hover {
-  color: var(--color-accent-hover);
+  text-decoration: underline;
 }
 
+/* ---------- DIVIDER ---------- */
 .form-divider {
   display: flex;
   align-items: center;
@@ -127,18 +158,21 @@
   background: var(--color-border-light);
 }
 
+/* ---------- LINKS ---------- */
 .form-link {
   font-size: 14px;
   color: var(--color-accent);
   font-weight: 500;
-  transition: color 0.15s;
+  transition: color 0.2s ease;
   text-decoration: none;
 }
 
 .form-link:hover {
   color: var(--color-accent-hover);
+  text-decoration: underline;
 }
 
+/* ---------- FOOTER ---------- */
 .form-footer-text {
   text-align: center;
   font-size: 14px;
@@ -150,8 +184,17 @@
   color: var(--color-accent);
   font-weight: 500;
   text-decoration: none;
+  transition: color 0.2s ease;
 }
 
 .form-footer-text a:hover {
   color: var(--color-accent-hover);
+  text-decoration: underline;
+}
+
+/* ---------- RESPONSIVE ---------- */
+@media (max-width: 768px) {
+  .form-group {
+    margin-bottom: 16px;
+  }
 }
