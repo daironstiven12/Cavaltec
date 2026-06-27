@@ -1,0 +1,1097 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Documentación del Proyecto — CAVALTEC</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    :root {
+      --accent: #6366f1;
+      --accent-hover: #4f46e5;
+      --accent-light: #eef2ff;
+      --bg: #ffffff;
+      --bg-secondary: #f8fafc;
+      --bg-tertiary: #f1f5f9;
+      --text-primary: #0f172a;
+      --text-secondary: #475569;
+      --text-tertiary: #94a3b8;
+      --border: #e2e8f0;
+      --border-light: #f1f5f9;
+      --success: #22c55e;
+      --warning: #f59e0b;
+      --error: #ef4444;
+      --code-bg: #1e293b;
+      --shadow-sm: 0 1px 2px rgba(0,0,0,0.05);
+      --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.07), 0 2px 4px -2px rgba(0,0,0,0.05);
+      --shadow-lg: 0 10px 15px -3px rgba(0,0,0,0.08), 0 4px 6px -4px rgba(0,0,0,0.04);
+      --radius-sm: 6px;
+      --radius-md: 8px;
+      --radius-lg: 12px;
+      --radius-xl: 16px;
+    }
+
+    html {
+      scroll-behavior: smooth;
+      font-size: 16px;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      color: var(--text-primary);
+      background: var(--bg-secondary);
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .page {
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 0 24px 80px;
+    }
+
+    /* ── Cover ── */
+    .cover {
+      background: linear-gradient(135deg, var(--accent) 0%, #818cf8 100%);
+      color: #fff;
+      border-radius: var(--radius-xl);
+      padding: 56px 48px;
+      margin: 40px 0 48px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .cover::before {
+      content: '';
+      position: absolute;
+      top: -60%;
+      right: -20%;
+      width: 500px;
+      height: 500px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.06);
+    }
+
+    .cover::after {
+      content: '';
+      position: absolute;
+      bottom: -40%;
+      left: -10%;
+      width: 400px;
+      height: 400px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.04);
+    }
+
+    .cover-badge {
+      display: inline-block;
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      background: rgba(255,255,255,0.15);
+      padding: 4px 14px;
+      border-radius: var(--radius-full, 999px);
+      margin-bottom: 16px;
+    }
+
+    .cover h1 {
+      font-size: 38px;
+      font-weight: 800;
+      letter-spacing: -1px;
+      line-height: 1.15;
+      margin-bottom: 12px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .cover p {
+      font-size: 17px;
+      line-height: 1.7;
+      opacity: 0.9;
+      max-width: 600px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .cover-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 24px;
+      margin-top: 28px;
+      padding-top: 24px;
+      border-top: 1px solid rgba(255,255,255,0.15);
+      position: relative;
+      z-index: 1;
+    }
+
+    .cover-meta-item {
+      font-size: 14px;
+      opacity: 0.85;
+    }
+
+    .cover-meta-item strong {
+      display: block;
+      font-weight: 600;
+      color: #fff;
+      opacity: 1;
+      margin-bottom: 2px;
+    }
+
+    /* ── Navigation ── */
+    .nav-bar {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 12px 20px;
+      margin-bottom: 40px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .nav-bar a {
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--text-secondary);
+      text-decoration: none;
+      padding: 6px 14px;
+      border-radius: var(--radius-sm);
+      transition: all 0.15s;
+    }
+
+    .nav-bar a:hover {
+      background: var(--accent-light);
+      color: var(--accent);
+    }
+
+    /* ── Section ── */
+    .section {
+      margin-bottom: 48px;
+    }
+
+    .section-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 20px;
+      padding-bottom: 12px;
+      border-bottom: 2px solid var(--border);
+    }
+
+    .section-number {
+      width: 32px;
+      height: 32px;
+      border-radius: var(--radius-md);
+      background: var(--accent);
+      color: #fff;
+      font-size: 14px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .section-title {
+      font-size: 22px;
+      font-weight: 700;
+      letter-spacing: -0.3px;
+    }
+
+    .section-desc {
+      font-size: 15px;
+      color: var(--text-secondary);
+      margin-bottom: 20px;
+      line-height: 1.7;
+    }
+
+    /* ── Cards ── */
+    .card {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 24px;
+      box-shadow: var(--shadow-sm);
+      margin-bottom: 16px;
+    }
+
+    .card h3 {
+      font-size: 15px;
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+
+    .card p {
+      font-size: 14px;
+      color: var(--text-secondary);
+      line-height: 1.7;
+    }
+
+    .card-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin-bottom: 16px;
+    }
+
+    .card-full {
+      grid-column: 1 / -1;
+    }
+
+    /* ── Code blocks ── */
+    .code-block {
+      background: var(--code-bg);
+      border-radius: var(--radius-lg);
+      padding: 20px 24px;
+      margin: 12px 0 20px;
+      overflow-x: auto;
+      position: relative;
+    }
+
+    .code-block pre {
+      font-family: 'SF Mono', 'Cascadia Code', 'Fira Code', 'Consolas', monospace;
+      font-size: 14px;
+      line-height: 1.7;
+      color: #e2e8f0;
+      white-space: pre;
+      tab-size: 2;
+    }
+
+    .code-block .comment { color: #64748b; }
+    .code-block .keyword { color: #818cf8; }
+    .code-block .string { color: #34d399; }
+    .code-block .path { color: #fbbf24; }
+
+    .inline-code {
+      font-family: 'SF Mono', 'Cascadia Code', 'Fira Code', 'Consolas', monospace;
+      font-size: 13px;
+      background: var(--bg-tertiary);
+      padding: 2px 8px;
+      border-radius: var(--radius-sm);
+      color: var(--accent);
+    }
+
+    /* ── Tables ── */
+    .table-wrapper {
+      overflow-x: auto;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      margin: 12px 0 20px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 14px;
+    }
+
+    thead {
+      background: var(--bg-secondary);
+    }
+
+    th {
+      text-align: left;
+      padding: 12px 16px;
+      font-weight: 600;
+      font-size: 13px;
+      color: var(--text-secondary);
+      text-transform: uppercase;
+      letter-spacing: 0.4px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    td {
+      padding: 12px 16px;
+      color: var(--text-primary);
+      border-bottom: 1px solid var(--border-light);
+    }
+
+    tr:last-child td {
+      border-bottom: none;
+    }
+
+    /* ── Status indicators ── */
+    .status-done {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--success);
+    }
+
+    .status-done::before {
+      content: '';
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--success);
+    }
+
+    .status-wip {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--warning);
+    }
+
+    .status-wip::before {
+      content: '';
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--warning);
+    }
+
+    /* ── Tree ── */
+    .tree {
+      font-family: 'SF Mono', 'Cascadia Code', 'Fira Code', 'Consolas', monospace;
+      font-size: 14px;
+      line-height: 2;
+      color: var(--text-primary);
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 20px 24px;
+      margin: 12px 0 20px;
+    }
+
+    .tree .folder { color: var(--accent); font-weight: 600; }
+    .tree .file { color: var(--text-secondary); }
+
+    /* ── URL grid ── */
+    .url-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin: 12px 0 20px;
+    }
+
+    .url-item {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 16px 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .url-label {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-tertiary);
+      text-transform: uppercase;
+      letter-spacing: 0.4px;
+    }
+
+    .url-value {
+      font-family: 'SF Mono', 'Cascadia Code', 'Fira Code', 'Consolas', monospace;
+      font-size: 14px;
+      color: var(--accent);
+      word-break: break-all;
+    }
+
+    /* ── Steps / Timeline ── */
+    .steps {
+      counter-reset: step;
+    }
+
+    .step {
+      counter-increment: step;
+      display: flex;
+      gap: 16px;
+      margin-bottom: 20px;
+    }
+
+    .step-num {
+      width: 32px;
+      height: 32px;
+      border-radius: var(--radius-full);
+      background: var(--accent-light);
+      color: var(--accent);
+      font-size: 14px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+
+    .step-body {
+      flex: 1;
+    }
+
+    .step-body h4 {
+      font-size: 15px;
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+
+    .step-body p {
+      font-size: 14px;
+      color: var(--text-secondary);
+      line-height: 1.7;
+    }
+
+    /* ── Screenshot cards ── */
+    .screenshot-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+      gap: 16px;
+    }
+
+    .screenshot-card {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      transition: box-shadow 0.2s;
+    }
+
+    .screenshot-card:hover {
+      box-shadow: var(--shadow-md);
+    }
+
+    .screenshot-placeholder {
+      height: 140px;
+      background: var(--bg-tertiary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 32px;
+      color: var(--text-tertiary);
+      border-bottom: 1px solid var(--border-light);
+    }
+
+    .screenshot-card-title {
+      padding: 14px 16px;
+      font-size: 14px;
+      font-weight: 500;
+    }
+
+    /* ── Tech tags ── */
+    .tech-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin: 12px 0 16px;
+    }
+
+    .tech-tag {
+      font-size: 12px;
+      font-weight: 500;
+      padding: 4px 12px;
+      border-radius: var(--radius-full);
+      background: var(--accent-light);
+      color: var(--accent);
+    }
+
+    .tech-tag--python { background: #f0f9ff; color: #2563eb; }
+    .tech-tag--js { background: #fef9c3; color: #a16207; }
+    .tech-tag--db { background: #ecfdf5; color: #059669; }
+    .tech-tag--docker { background: #eef2ff; color: #4f46e5; }
+    .tech-tag--tool { background: var(--bg-tertiary); color: var(--text-secondary); }
+
+    /* ── Alert ── */
+    .alert {
+      background: var(--accent-light);
+      border: 1px solid #c7d2fe;
+      border-radius: var(--radius-md);
+      padding: 16px 20px;
+      font-size: 14px;
+      color: var(--accent-hover);
+      margin: 12px 0 20px;
+      line-height: 1.7;
+    }
+
+    /* ── Role cards ── */
+    .role-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+      margin: 12px 0 20px;
+    }
+
+    .role-card {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 24px;
+    }
+
+    .role-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: var(--radius-md);
+      background: var(--accent-light);
+      color: var(--accent);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      font-weight: 700;
+      margin-bottom: 12px;
+    }
+
+    .role-card h4 {
+      font-size: 15px;
+      font-weight: 600;
+      margin-bottom: 6px;
+    }
+
+    .role-card p {
+      font-size: 14px;
+      color: var(--text-secondary);
+      line-height: 1.7;
+    }
+
+    /* ── Credits footer ── */
+    .credits {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-xl);
+      padding: 40px 32px;
+      text-align: center;
+      margin-top: 48px;
+    }
+
+    .credits h3 {
+      font-size: 18px;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+
+    .credits p {
+      font-size: 14px;
+      color: var(--text-secondary);
+      line-height: 1.8;
+    }
+
+    .credits-divider {
+      width: 48px;
+      height: 3px;
+      background: var(--accent);
+      border-radius: var(--radius-full);
+      margin: 16px auto;
+    }
+
+    /* ── Responsive ── */
+    @media (max-width: 768px) {
+      .page { padding: 0 16px 48px; }
+
+      .cover { padding: 36px 24px; }
+      .cover h1 { font-size: 26px; }
+      .cover p { font-size: 15px; }
+      .cover-meta { gap: 16px; }
+
+      .card-grid { grid-template-columns: 1fr; }
+      .url-grid { grid-template-columns: 1fr; }
+      .role-grid { grid-template-columns: 1fr; }
+
+      .section-title { font-size: 18px; }
+      .code-block { padding: 16px; }
+      .code-block pre { font-size: 13px; }
+      .tree { font-size: 13px; }
+      .screenshot-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+
+    @media (max-width: 480px) {
+      .screenshot-grid { grid-template-columns: 1fr; }
+      .nav-bar a { font-size: 12px; padding: 4px 10px; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="page">
+
+  <!-- ═══ Cover ═══ -->
+  <header class="cover">
+    <div class="cover-badge">Hackathon CAVALTEC</div>
+    <h1>Plataforma de Cumplimiento<br />Normativo CAVALTEC</h1>
+    <p>
+      Aplicación web para la gestión y evaluación del cumplimiento normativo
+      en protección de datos personales, basada en la Ley 1581 de 2012.
+      Arquitectura moderna con FastAPI, React y MySQL.
+    </p>
+    <div class="cover-meta">
+      <div class="cover-meta-item">
+        <strong>Tecnologías</strong>
+        Python · FastAPI · React · MySQL · Docker
+      </div>
+      <div class="cover-meta-item">
+        <strong>Fecha</strong>
+        Junio 2026
+      </div>
+      <div class="cover-meta-item">
+        <strong>Autores</strong>
+        Por completar
+      </div>
+    </div>
+  </header>
+
+  <!-- ═══ Navigation ═══ -->
+  <nav class="nav-bar">
+    <a href="#arquitectura">Arquitectura</a>
+    <a href="#tecnologias">Tecnologías</a>
+    <a href="#requisitos">Requisitos</a>
+    <a href="#clonar">Clonar</a>
+    <a href="#backend">Backend</a>
+    <a href="#urls">URLs</a>
+    <a href="#frontend">Frontend</a>
+    <a href="#flujo">Flujo</a>
+    <a href="#roles">Roles</a>
+    <a href="#estado">Estado</a>
+    <a href="#capturas">Capturas</a>
+    <a href="#creditos">Créditos</a>
+  </nav>
+
+  <!-- ═══ 2. Arquitectura ═══ -->
+  <section id="arquitectura" class="section">
+    <div class="section-header">
+      <span class="section-number">2</span>
+      <h2 class="section-title">Arquitectura del proyecto</h2>
+    </div>
+    <p class="section-desc">
+      El proyecto se organiza en dos aplicaciones independientes —backend y frontend—
+      más el presente archivo de documentación en la raíz.
+    </p>
+
+    <div class="tree">
+      <span class="folder">backend/</span><br />
+      <span style="padding-left:24px;color:var(--text-tertiary);">Aplicación Python con FastAPI, SQLAlchemy y Docker</span><br />
+      <span class="folder">frontend/</span><br />
+      <span style="padding-left:24px;color:var(--text-tertiary);">Aplicación React con Vite y React Router</span><br />
+      <span class="file">documentacion.html</span><br />
+      <span style="padding-left:24px;color:var(--text-tertiary);">Documentación del proyecto (este archivo)</span>
+    </div>
+
+    <div class="card-grid">
+      <div class="card">
+        <h3>Backend</h3>
+        <p>
+          API REST construida con FastAPI. Expone endpoints para la gestión de
+          evaluaciones, usuarios, empresas y reportes. Se conecta a MySQL
+          mediante SQLAlchemy y administra migraciones con Alembic.
+          Se despliega con Docker Compose junto a MySQL y phpMyAdmin.
+        </p>
+      </div>
+      <div class="card">
+        <h3>Frontend</h3>
+        <p>
+          SPA desarrollada en React con Vite. Proporciona una interfaz moderna
+          con tres layouts según el rol del usuario (Super Administrador,
+          Administrador de Empresa, Auditor). Incluye panel de IA, dashboards
+          con métricas y flujo completo de evaluación.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ 3. Tecnologías ═══ -->
+  <section id="tecnologias" class="section">
+    <div class="section-header">
+      <span class="section-number">3</span>
+      <h2 class="section-title">Tecnologías utilizadas</h2>
+    </div>
+
+    <div class="card-grid">
+      <div class="card card-full">
+        <h3>Backend</h3>
+        <div class="tech-tags">
+          <span class="tech-tag tech-tag--python">Python 3.13</span>
+          <span class="tech-tag tech-tag--python">FastAPI</span>
+          <span class="tech-tag tech-tag--python">SQLAlchemy</span>
+          <span class="tech-tag tech-tag--python">Alembic</span>
+          <span class="tech-tag tech-tag--docker">Docker</span>
+          <span class="tech-tag tech-tag--docker">Docker Compose</span>
+          <span class="tech-tag tech-tag--db">MySQL 8</span>
+          <span class="tech-tag tech-tag--tool">OpenRouter (próximamente)</span>
+        </div>
+      </div>
+      <div class="card">
+        <h3>Frontend</h3>
+        <div class="tech-tags">
+          <span class="tech-tag tech-tag--js">React</span>
+          <span class="tech-tag tech-tag--js">Vite</span>
+          <span class="tech-tag tech-tag--js">React Router</span>
+          <span class="tech-tag tech-tag--js">React Icons</span>
+        </div>
+      </div>
+      <div class="card">
+        <h3>Base de datos</h3>
+        <div class="tech-tags">
+          <span class="tech-tag tech-tag--db">MySQL 8</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ 4. Requisitos previos ═══ -->
+  <section id="requisitos" class="section">
+    <div class="section-header">
+      <span class="section-number">4</span>
+      <h2 class="section-title">Requisitos previos</h2>
+    </div>
+    <p class="section-desc">
+      Antes de comenzar, asegúrate de tener instalado lo siguiente:
+    </p>
+
+    <div class="card-grid">
+      <div class="card">
+        <h3>Git</h3>
+        <p>Control de versiones. Descárgalo desde <a href="https://git-scm.com" target="_blank" style="color:var(--accent);text-decoration:none;font-weight:500;">git-scm.com</a>.</p>
+      </div>
+      <div class="card">
+        <h3>Docker Desktop</h3>
+        <p>Entorno de contenedores para el backend y la base de datos. Descárgalo desde <a href="https://www.docker.com/products/docker-desktop" target="_blank" style="color:var(--accent);text-decoration:none;font-weight:500;">docker.com</a>.</p>
+      </div>
+      <div class="card">
+        <h3>Node.js + npm</h3>
+        <p>Entorno de ejecución para el frontend. Descárgalo desde <a href="https://nodejs.org" target="_blank" style="color:var(--accent);text-decoration:none;font-weight:500;">nodejs.org</a>.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ 5. Clonar ═══ -->
+  <section id="clonar" class="section">
+    <div class="section-header">
+      <span class="section-number">5</span>
+      <h2 class="section-title">Clonar el proyecto</h2>
+    </div>
+    <p class="section-desc">
+      Abre una terminal y ejecuta los siguientes comandos:
+    </p>
+
+    <div class="code-block">
+      <pre>
+<span class="comment"># Clonar el repositorio</span>
+git clone https://github.com/usuario/cavaltec.git
+
+<span class="comment"># Entrar al directorio del proyecto</span>
+cd cavaltec</pre>
+    </div>
+
+    <div class="alert">
+      Reemplaza la URL del repositorio con la correcta cuando esté disponible.
+    </div>
+  </section>
+
+  <!-- ═══ 6. Backend ═══ -->
+  <section id="backend" class="section">
+    <div class="section-header">
+      <span class="section-number">6</span>
+      <h2 class="section-title">Ejecutar el Backend</h2>
+    </div>
+
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-body">
+          <h4>Entrar a la carpeta del backend</h4>
+          <div class="code-block" style="margin-top:8px;">
+            <pre>cd backend</pre>
+          </div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-body">
+          <h4>Levantar los servicios con Docker</h4>
+          <div class="code-block" style="margin-top:8px;">
+            <pre>docker compose up --build</pre>
+          </div>
+          <p>Este comando iniciará tres servicios:</p>
+          <ul style="margin-top:10px;padding-left:20px;font-size:14px;color:var(--text-secondary);line-height:2;">
+            <li><strong style="color:var(--text-primary);">Backend FastAPI</strong> — API REST en <span class="inline-code">localhost:8000</span></li>
+            <li><strong style="color:var(--text-primary);">MySQL 8</strong> — Base de datos relacional</li>
+            <li><strong style="color:var(--text-primary);">phpMyAdmin</strong> — Administrador visual de BD en <span class="inline-code">localhost:8080</span></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="alert">
+      Asegúrate de que Docker Desktop esté corriendo antes de ejecutar <span class="inline-code">docker compose up</span>.
+    </div>
+  </section>
+
+  <!-- ═══ 7. URLs ═══ -->
+  <section id="urls" class="section">
+    <div class="section-header">
+      <span class="section-number">7</span>
+      <h2 class="section-title">URLs del Backend</h2>
+    </div>
+    <p class="section-desc">
+      Una vez que Docker esté funcionando, los siguientes servicios estarán disponibles:
+    </p>
+
+    <div class="url-grid">
+      <div class="url-item">
+        <span class="url-label">Swagger UI</span>
+        <span class="url-value">http://localhost:8000/docs</span>
+      </div>
+      <div class="url-item">
+        <span class="url-label">Health Check</span>
+        <span class="url-value">http://localhost:8000/health</span>
+      </div>
+      <div class="url-item">
+        <span class="url-label">API Base</span>
+        <span class="url-value">http://localhost:8000</span>
+      </div>
+      <div class="url-item">
+        <span class="url-label">phpMyAdmin</span>
+        <span class="url-value">http://localhost:8080</span>
+      </div>
+    </div>
+
+    <div class="alert">
+      Los puertos pueden variar según la configuración del archivo <span class="inline-code">docker-compose.yml</span>.
+    </div>
+  </section>
+
+  <!-- ═══ 8. Frontend ═══ -->
+  <section id="frontend" class="section">
+    <div class="section-header">
+      <span class="section-number">8</span>
+      <h2 class="section-title">Ejecutar el Frontend</h2>
+    </div>
+
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-body">
+          <h4>Entrar a la carpeta del frontend</h4>
+          <div class="code-block" style="margin-top:8px;">
+            <pre>cd frontend</pre>
+          </div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-body">
+          <h4>Instalar dependencias</h4>
+          <div class="code-block" style="margin-top:8px;">
+            <pre>npm install</pre>
+          </div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-body">
+          <h4>Iniciar el servidor de desarrollo</h4>
+          <div class="code-block" style="margin-top:8px;">
+            <pre>npm run dev</pre>
+          </div>
+          <p style="margin-top:8px;">La aplicación estará disponible en:</p>
+          <div class="code-block" style="margin-top:8px;">
+            <pre>http://localhost:5173</pre>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ 9. Flujo ═══ -->
+  <section id="flujo" class="section">
+    <div class="section-header">
+      <span class="section-number">9</span>
+      <h2 class="section-title">Flujo de demostración</h2>
+    </div>
+    <p class="section-desc">
+      Sigue estos pasos para probar la aplicación en modo demostración:
+    </p>
+
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-body">
+          <h4>Abrir la Landing</h4>
+          <p>Página principal con información del producto, características y llamado a la acción.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-body">
+          <h4>Ir al Login</h4>
+          <p>Haz clic en "Iniciar sesión" desde la Landing o navega a <span class="inline-code">/login</span>.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-body">
+          <h4>Seleccionar un rol</h4>
+          <p>En la sección "Modo Demostración", elige entre Super Administrador, Administrador de Empresa o Auditor.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">4</div>
+        <div class="step-body">
+          <h4>Iniciar sesión</h4>
+          <p>Ingresa cualquier correo y contraseña. El sistema redirige al dashboard correspondiente al rol seleccionado.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">5</div>
+        <div class="step-body">
+          <h4>Recorrer las pantallas</h4>
+          <p>Explora las diferentes secciones: dashboard, evaluaciones, historial, reportes, panel IA y configuración. Navega entre las vistas usando el menú lateral.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="alert">
+      Actualmente la aplicación funciona con datos estáticos de demostración. La integración con el backend estará disponible próximamente.
+    </div>
+  </section>
+
+  <!-- ═══ 10. Roles ═══ -->
+  <section id="roles" class="section">
+    <div class="section-header">
+      <span class="section-number">10</span>
+      <h2 class="section-title">Roles del sistema</h2>
+    </div>
+
+    <div class="role-grid">
+      <div class="role-card">
+        <div class="role-icon">SA</div>
+        <h4>Super Administrador</h4>
+        <p>
+          Acceso global a la plataforma. Gestiona empresas, usuarios,
+          cuestionarios, versiones, reportes y auditoría. Visualiza dashboards
+          consolidados con métricas de todas las empresas.
+        </p>
+      </div>
+      <div class="role-card">
+        <div class="role-icon">AE</div>
+        <h4>Administrador de Empresa</h4>
+        <p>
+          Gestiona los usuarios y evaluaciones de su empresa. Visualiza
+          dashboards con métricas propias, ejecuta evaluaciones y genera
+          reportes. Accede al panel IA para recomendaciones.
+        </p>
+      </div>
+      <div class="role-card">
+        <div class="role-icon">AU</div>
+        <h4>Auditor</h4>
+        <p>
+          Revisa evaluaciones asignadas, genera reportes de auditoría y
+          consulta el historial. Visualiza dashboards con el cumplimiento
+          promedio de las empresas que audita.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ 11. Estado ═══ -->
+  <section id="estado" class="section">
+    <div class="section-header">
+      <span class="section-number">11</span>
+      <h2 class="section-title">Estado actual del proyecto</h2>
+    </div>
+
+    <div class="table-wrapper">
+      <table>
+        <thead>
+          <tr>
+            <th>Componente</th>
+            <th>Estado</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>Backend Dockerizado</td><td><span class="status-done">Completado</span></td></tr>
+          <tr><td>Base de datos MySQL</td><td><span class="status-done">Completado</span></td></tr>
+          <tr><td>Frontend React</td><td><span class="status-done">Completado</span></td></tr>
+          <tr><td>Arquitectura por roles</td><td><span class="status-done">Completado</span></td></tr>
+          <tr><td>Navegación completa</td><td><span class="status-done">Completado</span></td></tr>
+          <tr><td>Diseño UI</td><td><span class="status-done">Completado</span></td></tr>
+          <tr><td>Integración Backend</td><td><span class="status-wip">En progreso</span></td></tr>
+          <tr><td>Autenticación JWT</td><td><span class="status-wip">En progreso</span></td></tr>
+          <tr><td>Integración OpenRouter</td><td><span class="status-wip">Próximamente</span></td></tr>
+          <tr><td>Reportes PDF</td><td><span class="status-wip">Próximamente</span></td></tr>
+          <tr><td>IA / Asistente inteligente</td><td><span class="status-wip">Próximamente</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- ═══ 12. Capturas ═══ -->
+  <section id="capturas" class="section">
+    <div class="section-header">
+      <span class="section-number">12</span>
+      <h2 class="section-title">Capturas del sistema</h2>
+    </div>
+    <p class="section-desc">
+      Las siguientes tarjetas están preparadas para alojar las capturas de pantalla
+      de la aplicación. Reemplaza los marcadores con las imágenes correspondientes.
+    </p>
+
+    <div class="screenshot-grid">
+      <div class="screenshot-card">
+        <div class="screenshot-placeholder">&#9919;</div>
+        <div class="screenshot-card-title">Landing</div>
+      </div>
+      <div class="screenshot-card">
+        <div class="screenshot-placeholder">&#9919;</div>
+        <div class="screenshot-card-title">Login</div>
+      </div>
+      <div class="screenshot-card">
+        <div class="screenshot-placeholder">&#9919;</div>
+        <div class="screenshot-card-title">Dashboard</div>
+      </div>
+      <div class="screenshot-card">
+        <div class="screenshot-placeholder">&#9919;</div>
+        <div class="screenshot-card-title">Evaluación</div>
+      </div>
+      <div class="screenshot-card">
+        <div class="screenshot-placeholder">&#9919;</div>
+        <div class="screenshot-card-title">Resultados</div>
+      </div>
+      <div class="screenshot-card">
+        <div class="screenshot-placeholder">&#9919;</div>
+        <div class="screenshot-card-title">Panel IA</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ 13. Créditos ═══ -->
+  <section id="creditos" style="margin-bottom:0;">
+    <div class="credits">
+      <h3>Hackathon CAVALTEC</h3>
+      <div class="credits-divider"></div>
+      <p>
+        Universidad Mariana<br />
+        Facultad de Ingeniería de Sistemas<br /><br />
+        <strong>Equipo desarrollador</strong><br />
+        Por completar<br /><br />
+        <span style="color:var(--text-tertiary);font-size:13px;">Junio 2026 &mdash; Todos los derechos reservados</span>
+      </p>
+    </div>
+  </section>
+
+  <!-- ═══ Footer ═══ -->
+  <div style="text-align:center;padding:32px 0 0;font-size:13px;color:var(--text-tertiary);">
+    Documentación generada el 26 de junio de 2026
+  </div>
+
+</div>
+
+</body>
+</html>

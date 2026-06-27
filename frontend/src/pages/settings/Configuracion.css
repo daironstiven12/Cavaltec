@@ -1,0 +1,164 @@
+.config-fields {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.config-field {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-bottom: 18px;
+  border-bottom: 1px solid var(--color-border-light);
+}
+
+.config-field:last-child {
+  padding-bottom: 0;
+  border-bottom: none;
+}
+
+.config-field-label {
+  font-size: 14px;
+  color: var(--color-text-secondary);
+}
+
+.config-field-right {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.config-field-value {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--color-text-primary);
+}
+
+.config-field-badge {
+  font-size: 11px;
+  font-weight: 600;
+  padding: 2px 8px;
+  border-radius: var(--radius-full);
+  background: var(--color-accent-subtle);
+  color: var(--color-accent);
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+}
+
+.config-field-badge--success {
+  background: #ecfdf5;
+  color: var(--color-success);
+}
+
+.config-edit-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px 20px;
+  font-size: 14px;
+  font-weight: 500;
+  color: white;
+  background: var(--color-accent);
+  border: none;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  align-self: flex-start;
+  transition: all 0.15s;
+}
+
+.config-edit-btn:hover {
+  background: var(--color-accent-hover);
+}
+
+.config-action-btn {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--color-accent);
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.config-select {
+  padding: 6px 12px;
+  font-size: 14px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background: var(--color-bg);
+  color: var(--color-text-primary);
+  outline: none;
+  cursor: pointer;
+}
+
+.config-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-bottom: 18px;
+  border-bottom: 1px solid var(--color-border-light);
+  gap: 20px;
+}
+
+.config-toggle:last-child {
+  padding-bottom: 0;
+  border-bottom: none;
+}
+
+.config-toggle-body {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.config-toggle-desc {
+  font-size: 13px;
+  color: var(--color-text-tertiary);
+}
+
+.config-toggle-switch {
+  width: 44px;
+  height: 24px;
+  border-radius: var(--radius-full);
+  background: var(--color-bg-tertiary);
+  cursor: pointer;
+  position: relative;
+  transition: all 0.2s;
+  flex-shrink: 0;
+}
+
+.config-toggle-switch--on {
+  background: var(--color-accent);
+}
+
+.config-toggle-knob {
+  width: 20px;
+  height: 20px;
+  border-radius: var(--radius-full);
+  background: white;
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  transition: all 0.2s;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.15);
+}
+
+.config-toggle-switch--on .config-toggle-knob {
+  left: 22px;
+}
+
+@media (max-width: 768px) {
+  .config-field {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 6px;
+  }
+
+  .config-toggle {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+}

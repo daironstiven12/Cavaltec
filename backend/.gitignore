@@ -1,0 +1,39 @@
+# Virtual Environment
+.venv/
+venv/
+env/
+
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*$py.class
+*.so
+*.egg-info
+*.egg-info/
+
+# Test cache
+.pytest_cache/
+.mypy_cache/
+
+# Environment
+.env
+.env.local
+
+# Logs
+*.log
+
+# Alembic
+alembic/versions/
+
+# IDE
+.vscode/
+.idea/
+
+# Docker
+.docker/
+
+# OS
+.DS_Store
+Thumbs.db

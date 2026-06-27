@@ -1,0 +1,140 @@
+.cuestionario-layout {
+  display: grid;
+  grid-template-columns: 1fr 320px;
+  gap: 32px;
+  align-items: start;
+}
+
+.cuestionario-main {
+  background: var(--color-bg);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: 32px;
+}
+
+.cuestionario-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+.cuestionario-meta {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.cuestionario-category {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--color-accent);
+}
+
+.cuestionario-counter {
+  font-size: 13px;
+  color: var(--color-text-tertiary);
+}
+
+.cuestionario-question {
+  margin: 32px 0;
+}
+
+.cuestionario-text {
+  font-size: 20px;
+  font-weight: 500;
+  color: var(--color-text-primary);
+  line-height: 1.6;
+  letter-spacing: -0.3px;
+}
+
+.cuestionario-options {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 32px;
+}
+
+.cuestionario-option {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 16px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.cuestionario-option:hover {
+  border-color: var(--color-accent);
+  background: var(--color-accent-subtle);
+}
+
+.cuestionario-radio {
+  width: 20px;
+  height: 20px;
+  accent-color: var(--color-accent);
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.cuestionario-radio-label {
+  font-size: 15px;
+  color: var(--color-text-primary);
+  font-weight: 500;
+}
+
+.cuestionario-actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-top: 24px;
+  border-top: 1px solid var(--color-border);
+}
+
+.cuestionario-actions-right {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.cuestionario-help {
+  background: var(--color-bg);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: 24px;
+  position: sticky;
+  top: 96px;
+}
+
+.cuestionario-help-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--color-accent);
+  margin-bottom: 12px;
+}
+
+.cuestionario-help-text {
+  font-size: 14px;
+  color: var(--color-text-secondary);
+  line-height: 1.7;
+  margin-bottom: 16px;
+}
+
+.cuestionario-help-footer {
+  display: flex;
+}
+
+@media (max-width: 1024px) {
+  .cuestionario-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .cuestionario-help {
+    position: static;
+  }
+}
